@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Avatar</title>
+
+        <style type="text/css">
+            #doc {
+                width: 100%;
+                height: 450px;
+                border: 1px solid #000;
+                position: relative;
+                margin: 0 auto;
+                overflow: hidden;
+            }
+
+            .obstacle {
+                position: absolute;
+            }
+            .ground1 {
+                bottom: 20px;
+                left: 20px;
+                width: 500px;
+                height: 10px;
+                background-color: #F00;
+            }
+            .ground2 {
+                top: 60px;
+                right: 40px;
+                width: 100px;
+                height: 10px;
+                background-color: #F00;
+            }
+            #character {
+                position: absolute;
+                top: 0px;
+                left: 0px;
+                width: 32px;
+                height: 32px;
+                background: url('img/character1.png') no-repeat 0 0;
+                z-index:100;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="doc">
+            <div class="ground1 obstacle"></div>
+            <div class="ground2 obstacle"></div>
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+        <script src="js/jquery-collision.min.js"></script>
+        <script src="js/jquery.sprite.min.js"></script>
+        <script src="js/vrakatar.js"></script>
+    </body>
+</html>

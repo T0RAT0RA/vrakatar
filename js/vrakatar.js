@@ -14,6 +14,7 @@ var DIRECTION = {
     MODE = {
         "AUTO": 1,
         "MANUAL": 2,
+        "DRAG": 3,
     },
     SPACE = 32;
 
@@ -76,6 +77,7 @@ function Vrakatar(options) {
         this.action     = this.set_action(this.options.action.type, this.options.action.duration);
         this.action_queue = [];
         this.velocity   = this.options.velocity;
+        this.mode       = this.options.mode;
     };
 
     this.init_sprite = function() {
@@ -204,6 +206,8 @@ var BOARD_WIDTH = $("#doc").width(),
     player = new Vrakatar();
 
 $(window).keydown(function(e) {
+    if (player.mode != MODE["MANUAL"]) { return; }
+
     direction = e.keyCode;
     if($.inArray(direction, [DIRECTION["UP"], DIRECTION["DOWN"], DIRECTION["LEFT"], DIRECTION["RIGHT"]]) >= 0) {
         player.set_direction(direction);
@@ -213,6 +217,7 @@ $(window).keydown(function(e) {
 });
 
 $(window).keyup(function(e) {
+    if (player.mode != MODE["MANUAL"]) { return; }
     player.set_action(ACTION["IDLE"]);
     e.preventDefault();
 });

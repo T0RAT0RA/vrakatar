@@ -11,6 +11,10 @@ var DIRECTION = {
         "CLIMBING": 3,
         "JUMPING": 4,
     },
+    MODE = {
+        "AUTO": 1,
+        "MANUAL": 2,
+    },
     SPACE = 32;
 
 function Vrakatar(options) {
@@ -36,6 +40,7 @@ function Vrakatar(options) {
             "offset": [0, 0],
             "wrap": true,
         },
+        "mode": MODE["MANUAL"],
         "direction": DIRECTION["RIGHT"],
         "action": {
             "type": ACTION["IDLE"],
@@ -47,6 +52,17 @@ function Vrakatar(options) {
     this.init = function() {
         this.jquery_object = $(this.options.element);
         this.jquery_object.css(this.options.css).appendTo(this.options.append_to).prop("id", this.options.id).addClass(this.options.class);
+
+        //Add Vrakatar name div
+        var name_div = $("<div />").addClass("name").html(this.options.name).css({
+            "width": "100px",
+            "font-size": "10px",
+            "top": "-10px",
+            "position": "relative",
+            "left": "-10px",
+        });
+        this.jquery_object.prepend(name_div);
+
         this.init_sprite();
 
         this.name       = this.options.name;
@@ -108,24 +124,27 @@ function Vrakatar(options) {
     };
 
     this.update = function() {
-        //console.log("update", this.action.duration, Math.round((Date.now() - this.action.started_at) / 1000))
-        //Check if we need to update the current action
-        if (this.action_queue.length && this.action.duration <= 0) {
-            var next_action = this.action_queue.shift();
-            this.set_action(next_action.type, next_action.duration);
-        }
 
-        if (this.action.duration <= 0) {
-            //Get random action
-            var i = this.get_random_int(0, 100);
-            if (i <= 30) {
-                this.set_direction(DIRECTION[this.get_random_property(DIRECTION)]);
-                this.set_action(ACTION["MOVING"], this.get_random_int(1, 2));
-            } else {
-                this.set_direction(DIRECTION[this.get_random_property(DIRECTION)]);
-                this.set_action(ACTION["IDLE"], this.get_random_int(2, 5));
+        if (this.mode == MODE["AUTO"]) {
+            //console.log("update", this.action.duration, Math.round((Date.now() - this.action.started_at) / 1000))
+            //Check if we need to update the current action
+            if (this.action_queue.length && this.action.duration <= 0) {
+                var next_action = this.action_queue.shift();
+                this.set_action(next_action.type, next_action.duration);
             }
 
+            if (this.action.duration <= 0) {
+                //Get random action
+                var i = this.get_random_int(0, 100);
+                if (i <= 30) {
+                    this.set_direction(DIRECTION[this.get_random_property(DIRECTION)]);
+                    this.set_action(ACTION["MOVING"], this.get_random_int(1, 2));
+                } else {
+                    this.set_direction(DIRECTION[this.get_random_property(DIRECTION)]);
+                    this.set_action(ACTION["IDLE"], this.get_random_int(2, 5));
+                }
+
+            }
         }
 
         if (this.action.type == ACTION["MOVING"]) {
@@ -165,21 +184,21 @@ function Vrakatar(options) {
     this.init();
 }
 
-var player = new Vrakatar(),
-    BOARD_WIDTH = $("#doc").width(),
-    BOARD_HEIGHT = $("#doc").height();
+var BOARD_WIDTH = $("#doc").width(),
+    BOARD_HEIGHT = $("#doc").height(),
+    player = new Vrakatar();
 
 $(window).keydown(function(e) {
     direction = e.keyCode;
     if($.inArray(direction, [DIRECTION["UP"], DIRECTION["DOWN"], DIRECTION["LEFT"], DIRECTION["RIGHT"]]) >= 0) {
         player.set_direction(direction);
-        //player.set_action(ACTION["MOVING"]);
+        player.set_action(ACTION["MOVING"]);
         e.preventDefault();
     }
 });
 
 $(window).keyup(function(e) {
-    //player.set_action(ACTION["IDLE"]);
+    player.set_action(ACTION["IDLE"]);
     e.preventDefault();
 });
 
@@ -192,6 +211,11 @@ Game.run = function() {
 Game.stop = function() {
     clearInterval(Game._intervalId);
 }
+
+Game.start = function() {
+    Game._intervalId = setInterval(Game.run, 1000 / Game.fps);
+}
+
 Game.update = function() {
 
     //hits = $('#character').collision($('.obstacle'), {as: "<div/>", directionData: "direction"});
@@ -202,4 +226,4 @@ Game.update = function() {
 };
 
 // Start the game loop
-Game._intervalId = setInterval(Game.run, 1000 / Game.fps);
+Game.start();

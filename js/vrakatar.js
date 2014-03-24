@@ -32,6 +32,7 @@ function Vrakatar(options) {
             "height": "32px",
             "background": "url('http://localhost/js/side_project/img/character1.png') no-repeat 0 0",
             "z-index": "100",
+            "cursor": "pointer",
         },
         "sprite_config": {
             "cellSize": [32,32],
@@ -54,14 +55,19 @@ function Vrakatar(options) {
         this.jquery_object.css(this.options.css).appendTo(this.options.append_to).prop("id", this.options.id).addClass(this.options.class);
 
         //Add Vrakatar name div
-        var name_div = $("<div />").addClass("name").html(this.options.name).css({
+        this.name_div = $("<div />").addClass("name").html(this.options.name).css({
             "width": "100px",
             "font-size": "10px",
             "top": "-10px",
             "position": "relative",
             "left": "-10px",
         });
-        this.jquery_object.prepend(name_div);
+        this.jquery_object.prepend(this.name_div);
+
+        //Add actions menu
+        this.action_div = $("<div />").addClass("actions").append("<ul><li>Action 1</li><li>Action 2</li><li>Action 3</li></ul>");
+        this.jquery_object.append(this.action_div);
+        this.jquery_object.on("click", {action_div: this.action_div}, this.toggle_actions);
 
         this.init_sprite();
 
@@ -74,6 +80,10 @@ function Vrakatar(options) {
 
     this.init_sprite = function() {
         this.jquery_object.sprite(this.options.sprite_config);
+    };
+
+    this.toggle_actions = function(event) {
+        event.data.action_div.toggle();
     };
 
     this.set_action = function(action, duration) {
@@ -124,6 +134,11 @@ function Vrakatar(options) {
     };
 
     this.update = function() {
+
+        //Check for collisions
+        hits = $('#character').collision($('.obstacle'), {as: "<div/>", directionData: "direction"});
+        if (this.direction == DIRECTION["DOWN"] && $.inArray($(hits).data("direction"), ["S", "SE", "SW"]) >= 0) { return; }
+        if (this.direction == DIRECTION["UP"] && $.inArray($(hits).data("direction"), ["N", "NE", "NW"]) >= 0) { return; }
 
         if (this.mode == MODE["AUTO"]) {
             //console.log("update", this.action.duration, Math.round((Date.now() - this.action.started_at) / 1000))
@@ -217,11 +232,6 @@ Game.start = function() {
 }
 
 Game.update = function() {
-
-    //hits = $('#character').collision($('.obstacle'), {as: "<div/>", directionData: "direction"});
-    //if (direction == DOWN && $.inArray($(hits).data("direction"), ["S", "SE", "SW"]) >= 0) { return; }
-    //if (direction == UP && $.inArray($(hits).data("direction"), ["N", "NE", "NW"]) >= 0) { return; }
-
     player.update();
 };
 

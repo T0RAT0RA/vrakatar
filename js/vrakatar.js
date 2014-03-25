@@ -136,11 +136,12 @@ function Vrakatar(options) {
     };
 
     this.update = function() {
+        var collision = false;
 
         //Check for collisions
         hits = $('#character').collision($('.obstacle'), {as: "<div/>", directionData: "direction"});
-        if (this.direction == DIRECTION["DOWN"] && $.inArray($(hits).data("direction"), ["S", "SE", "SW"]) >= 0) { return; }
-        if (this.direction == DIRECTION["UP"] && $.inArray($(hits).data("direction"), ["N", "NE", "NW"]) >= 0) { return; }
+        if (this.direction == DIRECTION["DOWN"] && $.inArray($(hits).data("direction"), ["S", "SE", "SW"]) >= 0) { collision = true; }
+        if (this.direction == DIRECTION["UP"] && $.inArray($(hits).data("direction"), ["N", "NE", "NW"]) >= 0) { collision = true; }
 
         if (this.mode == MODE["AUTO"]) {
             //console.log("update", this.action.duration, Math.round((Date.now() - this.action.started_at) / 1000))
@@ -153,18 +154,18 @@ function Vrakatar(options) {
             if (this.action.duration <= 0) {
                 //Get random action
                 var i = this.get_random_int(0, 100);
-                if (i <= 30) {
+                if (i <= 40) {
                     this.set_direction(DIRECTION[this.get_random_property(DIRECTION)]);
                     this.set_action(ACTION["MOVING"], this.get_random_int(1, 2));
                 } else {
                     this.set_direction(DIRECTION[this.get_random_property(DIRECTION)]);
-                    this.set_action(ACTION["IDLE"], this.get_random_int(2, 5));
+                    this.set_action(ACTION["IDLE"], this.get_random_int(1, 2));
                 }
 
             }
         }
 
-        if (this.action.type == ACTION["MOVING"]) {
+        if (this.action.type == ACTION["MOVING"] && !collision) {
             this.jquery_object.next();
             var prop = "left",
                 nextPos = parseInt(this.jquery_object.css(this.css_prop), 10) + this.velocity;
@@ -205,6 +206,19 @@ var BOARD_WIDTH = $("#doc").width(),
     BOARD_HEIGHT = $("#doc").height(),
     player = new Vrakatar();
 
+//Init controls
+var mode_div = $("<select/>").appendTo("#doc");
+for (key in MODE) {
+    mode_div.append($("<option/>").val(MODE[key]).html(key));
+}
+mode_div.val(player.mode);
+mode_div.change(function(){
+    player.mode = $(this).val();
+});
+
+
+
+//Bind keys
 $(window).keydown(function(e) {
     if (player.mode != MODE["MANUAL"]) { return; }
 
@@ -222,6 +236,8 @@ $(window).keyup(function(e) {
     e.preventDefault();
 });
 
+
+//Init game
 Game = {};
 Game.fps = 60;
 Game.run = function() {

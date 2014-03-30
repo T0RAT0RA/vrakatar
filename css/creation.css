@@ -1,0 +1,44 @@
+.picture {
+    width: 300px;
+    border: 1px solid #000;
+    float: left;
+    margin: 50px;
+}
+.picture img, .picture canvas{
+    width: 100%;
+}
+
+.steps {
+    float: left;
+    margin: 50px;
+}
+
+#gender div{
+    border: 1px solid #fff;
+    width: 100px;
+    height: 150px;
+    float: left;
+    margin: 20px;
+    cursor: pointer;
+}
+#gender div:hover{
+    border: 1px solid #666;
+}
+
+#gender .male {
+    background-image: url("http://placehold.it/100x150&text=male");
+}
+
+#gender .female {
+    background-image: url("http://placehold.it/100x150&text=female");
+}
+
+#filters ul {
+    list-style: none;
+}
+
+#filters input {
+    display: inline-block;
+    width: 60%;
+    margin: 0 10px;
+}

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <title>Vravatar - Creation</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="css/creation.css">
+    </head>
+
+    <body>
+        <div id="doc">
+            <div class="picture">
+                <img id="orig" src="img/face1.jpg" />
+                <canvas id="processed" style="display: none;"></canvas>
+            </div>
+
+            <div class="steps">
+                <!-- Nav tabs -->
+                <ul class="nav nav-tabs">
+                  <li class="active"><a href="#gender" data-toggle="tab">Sexe</a></li>
+                  <li><a href="#type" data-toggle="tab">Type</a></li>
+                  <li><a href="#filters" data-toggle="tab">Filtres</a></li>
+                  <li><a href="#accessories" data-toggle="tab">Accessoires</a></li>
+                </ul>
+
+                <!-- Tab panes -->
+                <div class="tab-content">
+                  <div class="tab-pane active" id="gender">
+                    <div class="male"></div>
+                    <div class="female"></div>
+                  </div>
+                  <div class="tab-pane" id="type"></div>
+                  <div class="tab-pane" id="filters">
+                      <ul>
+                        <li>R 100%<input type="range" name="red" min="0" max="255" value="0">0%</li>
+                        <li>G 100%<input type="range" name="green" min="0" max="255" value="0">0%</li>
+                        <li>B 100%<input type="range" name="blue" min="0" max="255" value="0">0%</li>
+                      </ul>
+                      <button onclick="runFilter('orig', Filters.grayscale)">grayscale</button>
+                      <button onclick="removeFilters('orig')">reset</button>
+                  </div>
+                  <div class="tab-pane" id="accessories"></div>
+                </div>
+
+            </div>
+        </div>
+
+        <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+        <script type="text/javascript">
+            Filters = {};
+            Filters.getPixels = function(image) {
+              var c = this.getCanvas(image.width, image.height);
+              var ctx = c.getContext('2d');
+
+              ctx.drawImage(image, 0, 0, image.width, image.height);
+              return ctx.getImageData(0, 0, c.width, c.height);
+            };
+
+            Filters.getCanvas = function(w, h) {
+              var c = document.createElement('canvas');
+              c.width = w;
+              c.height = h;
+              return c;
+            };
+
+            Filters.filterImage = function(image, filter, var_args) {
+              var args = [this.getPixels(image)];
+              for (var i=2; i<arguments.length; i++) {
+                args.push(arguments[i]);
+              }
+              return filter.apply(null, args);
+            };
+
+            function removeFilters(id) {
+                var image = document.getElementById(id),
+                    canvas = image.nextElementSibling;
+
+                image.style.display = 'block';
+                canvas.style.display = 'none';
+            }
+
+            function runFilter(id, filter, arg1) {
+                var image = document.getElementById(id),
+                    canvas = image.nextElementSibling;
+
+              var idata = Filters.filterImage(image, filter, arg1);
+              canvas.width = idata.width;
+              canvas.height = idata.height;
+              var ctx = canvas.getContext('2d');
+              ctx.putImageData(idata, 0, 0);
+              image.style.display = 'none';
+              canvas.style.display = 'block';
+            }
+
+            Filters.grayscale = function(pixels, args) {
+              var d = pixels.data;
+              for (var i=0; i<d.length; i+=4) {
+                var r = d[i];
+                var g = d[i+1];
+                var b = d[i+2];
+                // CIE luminance for the RGB
+                // The human eye is bad at seeing red and blue, so we de-emphasize them.
+                var v = 0.2126*r + 0.7152*g + 0.0722*b;
+                d[i] = d[i+1] = d[i+2] = v
+              }
+              return pixels;
+            };
+
+            Filters.colors = function(pixels, colors) {
+              var d = pixels.data;
+              for (var i=0; i<d.length; i+=4) {
+                d[i] -= colors.red;
+                d[i+1] -= colors.green;
+                d[i+2] -= colors.blue;
+              }
+              return pixels;
+            };
+
+            $("#filters").on("change", "input[type='range']", function() {
+                var colors = {};
+                $("#filters input[type='range']").each(function(){
+                    colors[$(this).prop("name")] = $(this).val();
+                })
+                runFilter('orig', Filters.colors, colors);
+            });
+
+        </script>
+    </body>
+</html>

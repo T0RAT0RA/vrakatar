@@ -31,7 +31,7 @@ function Vrakatar(options) {
             "left": "30%",
             "width": "32px",
             "height": "32px",
-            "background": "url('http://localhost/js/side_project/img/character1.png') no-repeat 0 0",
+            "background": "url('http://localhost/astra/js/side_project/img/character1.png') no-repeat 0 0",
             "z-index": "100",
             "cursor": "pointer",
         },

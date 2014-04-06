@@ -1,6 +1,7 @@
 function connect(name) {
     var socket = io.connect('http://localhost');
-    var DIRECTION = {}
+    var DIRECTION = {};
+    var player_idplayer_id = null;
 
     $(".game").removeClass("not-connected").addClass("connected");
     socket.on('disconnect', function(){
@@ -15,6 +16,7 @@ function connect(name) {
             height: data.MAP.HEIGHT+"px"
         });
         DIRECTION = data.DIRECTION;
+        player_id = data.player.id;
     });
 
     //Print game state:
@@ -30,17 +32,19 @@ function connect(name) {
             //Create the player div if not exist
             if (!player.div.length) {
                 player.div = $("<div>").addClass("player").attr("id", player.id).css({"background-color": player.color, height: player.height+"px", width: player.width+"px"}).appendTo(".game");
+                if (player_id == player.id) {
+                    player.div.addClass("current");
+                }
                 $("<div>").addClass("name")
                     .html(player.name)
                     .css({
-                        width: (player.name.length * 5)+"px",
-                        left: (-player.name.length * 5/2 + parseInt(player.div.css("width")) )+"px"
+                        width: (player.name.length * 5)+"px"
                     })
                     .appendTo(player.div);
             }
             player.div.css({
-                top: player.position.x,
-                left: player.position.y
+                top: player.position.y,
+                left: player.position.x
             });
         }
     });
@@ -62,7 +66,6 @@ function connect(name) {
             socket.emit('player.keyup', e.keyCode);
             e.preventDefault();
         }
-        e.preventDefault();
     });
 
     $(".game-state").on("click", ".addRandomPlayer", function(e) {

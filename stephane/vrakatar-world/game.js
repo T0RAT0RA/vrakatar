@@ -36,6 +36,18 @@ Game.update = function() {
 
         player.position.x += player.velocity.x;
         player.position.y += player.velocity.y;
+
+        //Check world boundaries
+        if (player.position.x + player.width < 0) {
+            player.position.x = MAP.WIDTH;
+        } else if (player.position.x > MAP.WIDTH) {
+            player.position.x = 0 - player.width;
+        }
+        if (player.position.y + player.height < 0) {
+            player.position.y = MAP.HEIGHT;
+        } else if (player.position.y > MAP.HEIGHT) {
+            player.position.y = 0 - player.height;
+        }
     }
 
     Game.io.sockets.emit('game.state', Game.getState());
@@ -83,35 +95,31 @@ Game.start = function(io) {
         socket.on('player.keydown', function (direction) {
             switch(direction) {
                 case DIRECTION["LEFT"]:
-                    player.velocity.y = -VELOCITY.Y;
-                break;
-                case DIRECTION["UP"]:
                     player.velocity.x = -VELOCITY.X;
                 break;
-                case DIRECTION["RIGHT"]:
-                    player.velocity.y = VELOCITY.Y;
+                case DIRECTION["UP"]:
+                    player.velocity.y = -VELOCITY.Y;
                 break;
-                case DIRECTION["DOWN"]:
+                case DIRECTION["RIGHT"]:
                     player.velocity.x = VELOCITY.X;
                 break;
-                default:
+                case DIRECTION["DOWN"]:
+                    player.velocity.y = VELOCITY.Y;
+                break;
+                default: break;
             }
         });
         socket.on('player.keyup', function (direction) {
             switch(direction) {
                 case DIRECTION["LEFT"]:
-                    player.velocity.y = 0;
+                case DIRECTION["RIGHT"]:
+                    player.velocity.x = 0;
                 break;
                 case DIRECTION["UP"]:
-                    player.velocity.x = 0;
-                break;
-                default:
-                case DIRECTION["RIGHT"]:
+                case DIRECTION["DOWN"]:
                     player.velocity.y = 0;
                 break;
-                case DIRECTION["DOWN"]:
-                    player.velocity.x = 0;
-                break;
+                default: break;
             }
         });
 

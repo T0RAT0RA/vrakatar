@@ -20,15 +20,22 @@ Game.update = function() {
     //Update players pos
     for (i in players) {
         player = players[i];
-        player.position.x += player.velocity.x;
-        player.position.y += player.velocity.y;
 
         //If player is not human (no socket associate)
         //Move it randomly
         if (!player.socket) {
-            player.position.x += Game.randomInt(-10, 10);
-            player.position.y += Game.randomInt(-10, 10);
+            i = Game.randomInt(0, 100);
+
+            if (i >= 90) { //Moving?
+                player.velocity.x = Game.randomInt(-VELOCITY.X, VELOCITY.X);
+                player.velocity.y = Game.randomInt(-VELOCITY.Y, VELOCITY.Y);
+            } else if ((i >= 70)) { //Stop?
+                player.velocity.x = player.velocity.y = 0;
+            }
         }
+
+        player.position.x += player.velocity.x;
+        player.position.y += player.velocity.y;
     }
 
     Game.io.sockets.emit('game.state', Game.getState());
@@ -40,7 +47,7 @@ Game.stop = function() {
 
 Game.start = function(io) {
     Game.io = io;
-    Game._intervalId = setInterval(Game.update, 100);
+    Game._intervalId = setInterval(Game.update, 50);
 
     io.sockets.on('connection', function (socket) {
         var player = {

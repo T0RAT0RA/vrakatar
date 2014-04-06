@@ -29,7 +29,7 @@ function connect(name) {
 
             //Create the player div if not exist
             if (!player.div.length) {
-                player.div = $("<div>").addClass("player").attr("id", player.id).appendTo(".game");
+                player.div = $("<div>").addClass("player").attr("id", player.id).css({"background-color": player.color, height: player.height+"px", width: player.width+"px"}).appendTo(".game");
                 $("<div>").addClass("name")
                     .html(player.name)
                     .css({

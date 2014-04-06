@@ -58,6 +58,9 @@ Game.start = function(io) {
                     x: 0,
                     y: 0,
                 },
+                color: "#000",
+                width: 30,
+                height: 30,
                 velocity: {
                     x: 0,
                     y: 0,
@@ -121,6 +124,9 @@ Game.start = function(io) {
                     x: Game.randomInt(0, MAP.HEIGHT),
                     y: Game.randomInt(0, MAP.WIDTH),
                 },
+                color: "#A00",
+                width: Game.randomInt(20, 40),
+                height: Game.randomInt(20, 40),
                 velocity: {
                     x: 0,
                     y: 0,

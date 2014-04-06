@@ -31,18 +31,30 @@ function connect(name) {
 
             //Create the player div if not exist
             if (!player.div.length) {
-                player.div = $("<div>").addClass("player").attr("id", player.id).css({"background-color": player.color, height: player.height+"px", width: player.width+"px"}).appendTo(".game");
-                if (player_id == player.id) {
-                    player.div.addClass("current");
-                }
+                //Player parent div
+                player.div = $("<div>").addClass("player").attr("id", player.id).appendTo(".game");
+
+                //Player name div
                 $("<div>").addClass("name")
                     .html(player.name)
                     .css({
                         width: (player.name.length * 5)+"px"
                     })
                     .appendTo(player.div);
+
+                if (player_id == player.id) {
+                    player.div.addClass("current");
+
+                    //Player actions div
+                    $("<div>").addClass("actions")
+                        .append("<ul><li data-action='hi'>Say hi</li><li data-action='talk'>Talk</li><li data-action='blink'>Blink</li></ul>")
+                        .appendTo(player.div);
+                }
             }
             player.div.css({
+                "background-color": player.color,
+                height: player.height+"px",
+                width: player.width+"px",
                 top: player.position.y,
                 left: player.position.x
             });
@@ -70,6 +82,14 @@ function connect(name) {
 
     $(".game-state").on("click", ".addRandomPlayer", function(e) {
         socket.emit('game.addRandomPlayer');
+    });
+
+    $(".game").on("click", ".player", function(e) {
+        $(this).find(".actions").toggle();
+    });
+
+    $(".game").on("click", ".player [data-action]", function(e) {
+        socket.emit('player.action', $(this).data("action"));
     });
 
 }

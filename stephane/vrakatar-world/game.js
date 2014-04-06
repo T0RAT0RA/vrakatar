@@ -48,6 +48,20 @@ Game.update = function() {
         } else if (player.position.y > MAP.HEIGHT) {
             player.position.y = 0 - player.height;
         }
+
+        //Check actions
+        if (player.action) {
+            switch(player.action.type) {
+                case "blink":
+                    player.color = "#" + Game.randomInt(0, 9) + Game.randomInt(0, 9) + Game.randomInt(0, 9);
+                    if (Date.now() - player.action.started_at >= 5000) {
+                        delete player.action;
+                        player.color = "#000";
+                    }
+                break;
+                default: break;
+            }
+        }
     }
 
     Game.io.sockets.emit('game.state', Game.getState());
@@ -67,8 +81,8 @@ Game.start = function(io) {
                 socket: socket,
                 name: "player" + (Object.keys(players).length+1),
                 position: {
-                    x: 0,
-                    y: 0,
+                    x: Math.round(MAP.WIDTH/2),
+                    y: Math.round(MAP.HEIGHT/2),
                 },
                 color: "#000",
                 width: 30,
@@ -143,6 +157,13 @@ Game.start = function(io) {
             players[random_player.id] = random_player;
         });
 
+        socket.on('player.action', function (action) {
+            players[player.id].action = {
+                type: action,
+                started_at: Date.now()
+            };
+        });
+
         socket.on('disconnect', function (socket) {
             delete players[player.id];
             Game.io.sockets.emit('game.player.disconnect', player.id);
@@ -152,6 +173,7 @@ Game.start = function(io) {
 
 Game.getState = function() {
     return {
+        server_time: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
         status: Game._intervalId? "running" : "stopped",
         players_count: Object.keys(players).length,
         players: Game.getPlayers(),

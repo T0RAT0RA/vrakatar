@@ -59,7 +59,8 @@ Game.start = function(io) {
         players[player.id] = player;
 
         socket.emit('game.init', {
-            map: MAP,
+            MAP: MAP,
+            DIRECTION: DIRECTION,
             player: {
                 id: player.id
             }

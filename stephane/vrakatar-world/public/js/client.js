@@ -1,5 +1,6 @@
 function connect(name) {
     var socket = io.connect('http://localhost');
+    var DIRECTION = {}
 
     $(".game").removeClass("not-connected").addClass("connected");
     socket.on('disconnect', function(){
@@ -10,9 +11,10 @@ function connect(name) {
     socket.emit('player.name', {name: name});
     socket.on('game.init', function (data) {
         $(".game").css({
-            width: data.map.WIDTH+"px",
-            height: data.map.HEIGHT+"px"
+            width: data.MAP.WIDTH+"px",
+            height: data.MAP.HEIGHT+"px"
         });
+        DIRECTION = data.DIRECTION;
     });
 
     //Print game state:
@@ -49,12 +51,17 @@ function connect(name) {
 
     //Bind actions
     $(window).on("keydown", function(e) {
-        socket.emit('player.keydown', e.keyCode);
-        e.preventDefault();
+        if($.inArray(e.keyCode, [DIRECTION["UP"], DIRECTION["DOWN"], DIRECTION["LEFT"], DIRECTION["RIGHT"]]) >= 0) {
+            socket.emit('player.keydown', e.keyCode);
+            e.preventDefault();
+        }
     });
 
     $(window).on("keyup", function(e) {
-        socket.emit('player.keyup', e.keyCode);
+        if($.inArray(e.keyCode, [DIRECTION["UP"], DIRECTION["DOWN"], DIRECTION["LEFT"], DIRECTION["RIGHT"]]) >= 0) {
+            socket.emit('player.keyup', e.keyCode);
+            e.preventDefault();
+        }
         e.preventDefault();
     });
 

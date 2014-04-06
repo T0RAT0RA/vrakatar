@@ -1,0 +1,55 @@
+.game {
+    position: relative;
+    height: 400px;
+    width: 80%;
+    float: left;
+    margin: 0 10px;
+    border: 1px solid #000;
+    overflow: hidden;
+
+    .register{
+        width: 300px;
+        margin: 100px auto;
+        text-align: center;
+
+        button {
+            cursor: pointer;
+        }
+
+        input.error {
+            border: 2px solid #f00;
+        }
+    }
+
+    &.not-connected {
+        background: #ccc;
+    }
+
+    &.connected {
+        .register {
+            display: none;
+        }
+    }
+
+    .player {
+        position: absolute;
+        height: 30px;
+        width: 30px;
+        background-color: #333;
+
+        .name {
+            position: relative;
+            top: -12px;
+            font-size: 10px;
+        }
+    }
+
+}
+
+
+.game-state {
+    display: none;
+    margin: 0 10px;
+    border: 1px solid #600;
+    float: left;
+}

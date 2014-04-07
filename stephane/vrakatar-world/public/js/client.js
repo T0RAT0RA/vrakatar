@@ -47,7 +47,7 @@ function connect(name) {
 
                     //Player actions div
                     $("<div>").addClass("actions")
-                        .append("<ul><li data-action='hi'>Say hi</li><li data-action='talk'>Talk</li><li data-action='blink'>Blink</li></ul>")
+                        .append("<ul><li data-action='hi'>Dire salut</li><li data-action='talk'>Parler</li><li data-action='blink'>😈</li></ul>")
                         .appendTo(player.div);
                 }
             }
@@ -58,6 +58,17 @@ function connect(name) {
                 top: player.position.y,
                 left: player.position.x
             });
+
+            //Player talk
+            if (player.talk) {
+                if (!player.div.find(".talk").length) {
+                    $("<div>").addClass("talk")
+                        .appendTo(player.div);
+                }
+                player.div.find(".talk").html(player.talk);
+            } else {
+                player.div.find(".talk").remove();
+            }
         }
     });
     socket.on('game.player.disconnect', function (playerId) {

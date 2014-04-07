@@ -59,6 +59,13 @@ Game.update = function() {
                         player.color = "#000";
                     }
                 break;
+                case "hi":
+                    player.talk = "Salut!";
+                    if (Date.now() - player.action.started_at >= 5000) {
+                        player.talk = "";
+                        delete player.action;
+                    }
+                break;
                 default: break;
             }
         }
@@ -143,8 +150,8 @@ Game.start = function(io) {
                 socket: null,
                 name: "Random player" + (Object.keys(players).length+1),
                 position: {
-                    x: Game.randomInt(0, MAP.HEIGHT),
-                    y: Game.randomInt(0, MAP.WIDTH),
+                    x: Game.randomInt(50, MAP.WIDTH-50),
+                    y: Game.randomInt(50, MAP.HEIGHT-50),
                 },
                 color: "#A00",
                 width: Game.randomInt(20, 40),
@@ -173,7 +180,7 @@ Game.start = function(io) {
 
 Game.getState = function() {
     return {
-        server_time: new Date().toISOString().replace(/T/, ' ').replace(/\..+/, ''),
+        server_time: new Date().toLocaleTimeString(),
         status: Game._intervalId? "running" : "stopped",
         players_count: Object.keys(players).length,
         players: Game.getPlayers(),

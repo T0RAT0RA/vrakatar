@@ -6,7 +6,6 @@ function connect(name) {
     $(".game").removeClass("not-connected").addClass("connected");
     socket.on('disconnect', function(){
         disconnect();
-        io.disconnect();
     });
 
     socket.emit('player.name', {name: name});
@@ -93,6 +92,10 @@ function connect(name) {
 
     $(".game-state").on("click", ".addRandomPlayer", function(e) {
         socket.emit('game.addRandomPlayer');
+    });
+
+    $(".game-state").on("click", ".deleteRandomPlayers", function(e) {
+        socket.emit('game.deleteRandomPlayers');
     });
 
     $(".game").on("click", ".player", function(e) {

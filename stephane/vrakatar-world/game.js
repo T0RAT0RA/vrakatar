@@ -6,7 +6,7 @@ var extend = require('util')._extend,
         "LEFT": 37,
         "RIGHT": 39,
     },
-    MAP = {WIDTH: 1000, HEIGHT: 400},
+    MAP = {WIDTH: 900, HEIGHT: 400},
     VELOCITY = {X: 10, Y:10};
 
 //Init game
@@ -162,6 +162,15 @@ Game.start = function(io) {
                 },
             };
             players[random_player.id] = random_player;
+        });
+
+        socket.on('game.deleteRandomPlayers', function () {
+            for (i in players) {
+                if (!players[i].socket) {
+                    Game.io.sockets.emit('game.player.disconnect', players[i].id);
+                    delete players[i];
+                }
+            }
         });
 
         socket.on('player.action', function (action) {

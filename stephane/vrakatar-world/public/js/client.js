@@ -3,6 +3,7 @@ function connect(name) {
     var DIRECTION = {};
     var player_idplayer_id = null;
 
+
     $(".game").removeClass("not-connected").addClass("connected");
     socket.on('disconnect', function(){
         disconnect();
@@ -10,12 +11,13 @@ function connect(name) {
 
     socket.emit('player.name', {name: name});
     socket.on('game.init', function (data) {
-        $(".game").css({
+        $(".map").css({
             width: data.MAP.WIDTH+"px",
             height: data.MAP.HEIGHT+"px"
         });
         DIRECTION = data.DIRECTION;
         player_id = data.player.id;
+        generateMap(data.MAP.WIDTH, data.MAP.HEIGHT);
     });
 
     //Print game state:
@@ -129,3 +131,89 @@ $(".game .register").on("submit", function(){
 
     return false;
 });
+
+function generateMap(width, height) {
+    var WIDTH = width;
+    var HEIGHT = height;
+    var stage = new PIXI.Stage(0xEEFFFF);
+    var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
+
+    document.querySelector(".map").appendChild(renderer.view);
+    var loader = new PIXI.AssetLoader(['/img/tiles/roadTiles.json']);
+    var graphics = new PIXI.Graphics();
+    stage.addChild(graphics);
+
+    function isoTile(filename) {
+      return function(x, y) {
+        var tile = PIXI.Sprite.fromFrame(filename);
+        tile.position.x = x;
+        tile.position.y = y;
+
+        // bottom-left
+        tile.anchor.x = 0;
+        tile.anchor.y = 1;
+        stage.addChild(tile);
+      }
+    }
+
+    // map
+    var G=0, D=1, W=2, S=3;
+    var terrain = [
+        [G, G, G, G, S, S, G, G, G, G],
+        [D, D, G, G, D, S, G, G, G, G],
+        [D, G, G, D, D, D, S, S, G, G],
+        [D, S, D, G, D, D, S, G, G, G],
+        [G, G, S, D, D, S, S, G, G, G],
+        [G, G, S, D, D, S, S, G, G, G],
+        [G, G, S, S, S, S, S, G, G, G],
+        [G, G, G, G, S, S, G, G, G, G],
+        [G, G, W, W, G, G, G, G, G, G],
+        [G, W, W, W, G, G, G, G, G, G],
+    ];
+
+    // Tiles with height can exceed these dimensions.
+    var tileHeight = 50;
+    var tileWidth = 50;
+
+    // tiles
+    var grass = isoTile('grass.png');
+    var dirt = isoTile('dirt.png');
+    var water = isoTile('water.png');
+    var sand = isoTile('beach.png');
+    var tileMethods = [grass, dirt, water, sand];
+
+    function drawMap(terrain, xOffset, yOffset) {
+        var tileType, x, y, isoX, isoY, idx;
+
+        for (var i = 0, iL = terrain.length; i < iL; i++) {
+            for (var j = 0, jL = terrain[i].length; j < jL; j++) {
+                // cartesian 2D coordinate
+                x = j * tileWidth;
+                y = i * tileHeight;
+
+                // iso coordinate
+                isoX = x - y;
+                isoY = (x + y) / 2;
+
+                tileType = terrain[i][j];
+                drawTile = tileMethods[tileType];
+                drawTile(isoX + xOffset, isoY + yOffset);
+            }
+        }
+    }
+
+    loader.onComplete = start;
+    loader.load();
+
+    function start() {
+      drawMap(terrain, WIDTH / 2, tileHeight * 1.5);
+
+      function animate() {
+        requestAnimFrame(animate);
+        renderer.render(stage);
+      }
+      requestAnimFrame(animate);
+    }
+
+    $(".map").show();
+};

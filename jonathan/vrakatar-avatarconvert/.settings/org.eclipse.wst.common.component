@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project-modules id="moduleCoreId" project-version="1.5.0">
+    <wb-module deploy-name="vrakatar-avatarconvert">
+        <wb-resource deploy-path="/" source-path="/src/main/webapp"/>
+        <property name="context-root" value="vrakatar-avatarconvert"/>
+        <property name="java-output-path" value="/vrakatar-avatarconvert/bin"/>
+    </wb-module>
+</project-modules>

@@ -1,5 +1,5 @@
 function connect(name) {
-    var socket = io.connect('http://localhost:8000');
+    socket = io.connect('http://localhost:8000');
     var DIRECTION = {};
     var player_idplayer_id = null;
 
@@ -17,7 +17,7 @@ function connect(name) {
         });
         DIRECTION = data.DIRECTION;
         player_id = data.player.id;
-        generateMap(data.MAP.WIDTH, data.MAP.HEIGHT);
+        stage = generateMap(data.MAP.WIDTH, data.MAP.HEIGHT);
     });
 
     //Print game state:
@@ -52,12 +52,14 @@ function connect(name) {
                         .appendTo(player.div);
                 }
             }
+
+            player.div.attr("data-direction", player.direction);
             player.div.css({
                 "background-color": player.color,
                 height: player.height+"px",
                 width: player.width+"px",
-                top: player.position.y,
-                left: player.position.x
+                top: player.position.y - 50,
+                left: player.position.x + 30
             });
 
             //Player talk
@@ -135,13 +137,11 @@ $(".game .register").on("submit", function(){
 function generateMap(width, height) {
     var WIDTH = width;
     var HEIGHT = height;
-    var stage = new PIXI.Stage(0xEEFFFF);
+    var stage = new PIXI.Stage(0xEEFFFF, true);
     var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT);
 
     document.querySelector(".map").appendChild(renderer.view);
     var loader = new PIXI.AssetLoader(['/img/tiles/roadTiles.json']);
-    var graphics = new PIXI.Graphics();
-    stage.addChild(graphics);
 
     function isoTile(filename) {
       return function(x, y) {
@@ -152,7 +152,13 @@ function generateMap(width, height) {
         // bottom-left
         tile.anchor.x = 0;
         tile.anchor.y = 1;
+
+        tile.setInteractive(true);
+        tile.click = function(mouseData){
+           socket.emit('player.click', {x: x, y: y});
+        }
         stage.addChild(tile);
+
       }
     }
 
@@ -216,4 +222,6 @@ function generateMap(width, height) {
     }
 
     $(".map").show();
+
+    return stage;
 };

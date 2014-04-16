@@ -7,7 +7,7 @@ var extend = require('util')._extend,
         "RIGHT": 39,
     },
     MAP = {WIDTH: 900, HEIGHT: 400},
-    VELOCITY = {X: 10, Y:10};
+    VELOCITY = {X: 5, Y:5};
 
 //Init game
 var Game = {},
@@ -26,16 +26,59 @@ Game.update = function() {
         if (!player.socket) {
             i = Game.randomInt(0, 100);
 
-            if (i >= 90) { //Moving?
-                player.velocity.x = Game.randomInt(-VELOCITY.X, VELOCITY.X);
-                player.velocity.y = Game.randomInt(-VELOCITY.Y, VELOCITY.Y);
-            } else if ((i >= 70)) { //Stop?
-                player.velocity.x = player.velocity.y = 0;
+            if (isEmpty(player.destination) && i >= 99) { //Moving?
+                range = 500;
+                player.destination = {
+                    x: 5*Math.round(Game.randomInt(0, MAP.WIDTH)/5),
+                    y: 5*Math.round(Game.randomInt(0, MAP.HEIGHT)/5)
+                }
+            }
+        }
+
+        if (player.destination) {
+            if (player.destination.x > player.position.x) {
+                player.velocity.x = VELOCITY.X;
+            } else if (player.destination.x < player.position.x) {
+                player.velocity.x = -VELOCITY.X;
+            } else {
+                player.velocity.x = 0;
+            }
+
+            if (player.destination.y > player.position.y) {
+                player.velocity.y = VELOCITY.Y;
+            } else if (player.destination.y < player.position.y) {
+                player.velocity.y = -VELOCITY.Y;
+            } else {
+                player.velocity.y = 0;
             }
         }
 
         player.position.x += player.velocity.x;
         player.position.y += player.velocity.y;
+
+        //Check direction
+        if (player.velocity.x > 0 && player.velocity.y == 0) {
+            player.direction = 'e';
+        } else if (player.velocity.x < 0 && player.velocity.y == 0) {
+            player.direction = 'w';
+        } else if (player.velocity.y > 0 && player.velocity.x == 0) {
+            player.direction = 's';
+        } else if (player.velocity.y < 0 && player.velocity.x == 0) {
+            player.direction = 'n';
+        } else if (player.velocity.x > 0 && player.velocity.y > 0) {
+            player.direction = 'se';
+        } else if (player.velocity.x < 0 && player.velocity.y > 0) {
+            player.direction = 'sw';
+        } else if (player.velocity.x < 0 && player.velocity.y < 0) {
+            player.direction = 'nw';
+        } else if (player.velocity.x > 0 && player.velocity.y < 0) {
+            player.direction = 'ne';
+        }
+
+        //Check destination
+        if (isAtDestination(player)) {
+            player.destination = {};
+        }
 
         //Check world boundaries
         if (player.position.x + player.width < 0) {
@@ -87,6 +130,8 @@ Game.start = function(io) {
                 id: Date.now(),
                 socket: socket,
                 name: "player" + (Object.keys(players).length+1),
+                direction: "s",
+                destination: {},
                 position: {
                     x: Math.round(MAP.WIDTH/2),
                     y: Math.round(MAP.HEIGHT/2),
@@ -110,7 +155,7 @@ Game.start = function(io) {
         });
 
         socket.on('player.name', function (data) {
-            players[player.id].name = data.name;
+            player.name = data.name;
         });
 
         socket.on('player.keydown', function (direction) {
@@ -144,14 +189,20 @@ Game.start = function(io) {
             }
         });
 
+        socket.on('player.click', function (data) {
+            player.destination = {x: data.x, y: data.y};
+        });
+
         socket.on('game.addRandomPlayer', function () {
             random_player = {
                 id: Date.now(),
                 socket: null,
                 name: "Random player" + (Object.keys(players).length+1),
+                direction: "s",
+                destination: {},
                 position: {
-                    x: Game.randomInt(50, MAP.WIDTH-50),
-                    y: Game.randomInt(50, MAP.HEIGHT-50),
+                    x: 5*Math.round(Game.randomInt(MAP.WIDTH/2 - 50, MAP.WIDTH/2 + 50)/5),
+                    y: 5*Math.round(Game.randomInt(MAP.HEIGHT/2 - 50, MAP.HEIGHT/2 + 50)/5),
                 },
                 color: "#A00",
                 width: Game.randomInt(20, 40),
@@ -212,6 +263,14 @@ Game.getPlayers = function(id) {
 
 Game.randomInt = function(low, high) {
     return Math.floor(Math.random() * (high - low) + low);
+}
+
+function isEmpty(obj) {
+    return Object.keys(obj).length === 0;
+}
+
+function isAtDestination(player) {
+    return (!isEmpty(player.destination) && player.destination.x == player.position.x && player.destination.y == player.position.y);
 }
 
 module.exports = function(io) {

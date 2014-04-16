@@ -8,5 +8,8 @@ var server = app.listen(app.get('port'), function() {
   debug('Express server listening on port ' + server.address().port);
 });
 
-var io = require('socket.io').listen(server, {log: false});
-var game = require('../game')(io);
+var io_vrakatar = require('socket.io').listen(8000, {log: false});
+var game = require('../game')(io_vrakatar);
+
+var io_site = require('socket.io').listen(8001, {log: false});
+var game_site = require('../game_site')(io_site);

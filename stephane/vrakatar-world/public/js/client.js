@@ -1,5 +1,5 @@
 function connect(name) {
-    var socket = io.connect('http://localhost');
+    var socket = io.connect('http://localhost:8000');
     var DIRECTION = {};
     var player_idplayer_id = null;
 

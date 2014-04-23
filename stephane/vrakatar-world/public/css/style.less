@@ -37,8 +37,44 @@
     }
 
     .player {
+        @player_height: 113;
+        @player_width: 113;
         position: absolute;
-        background-color: #333;
+        /*background-color: #333;*/
+        background-image: url("/img/her.png");
+        width: unit(@player_width, px);
+        height: unit(@player_height, px);
+
+        &[data-direction=s] {
+            background-position: 0px 0px;
+        }
+        &[data-direction=e] {
+            background-position: 0px unit(-@player_width, px);
+        }
+        &[data-direction=w] {
+            background-position: 0px unit(-@player_width*2, px);
+        }
+        &[data-direction=n] {
+            background-position: 0px unit(-@player_width*3, px);
+        }
+        /*
+        &[data-direction=sw] {
+            background-position: 0px -92px;
+        }
+        &[data-direction=nw] {
+            background-position: 0px -276px;
+        }
+        &[data-direction=ne] {
+            background-position: 0px -460px;
+        }
+        &[data-direction=se] {
+            background-position: 0px -644px;
+        }
+        */
+
+        .moving {
+
+        }
 
         .name {
             position: relative;

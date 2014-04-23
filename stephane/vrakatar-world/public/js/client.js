@@ -51,13 +51,17 @@ function connect(name) {
                         .append("<ul><li data-action='hi'>Dire salut</li><li data-action='talk'>Parler</li><li data-action='blink'>😈</li></ul>")
                         .appendTo(player.div);
                 }
+                player.div.css({
+                    //"background-color": player.color,
+                    //height: player.height+"px",
+                    //width: player.width+"px",
+                    top: player.position.y - 50,
+                    left: player.position.x + 30
+                });
             }
 
             player.div.attr("data-direction", player.direction);
             player.div.css({
-                "background-color": player.color,
-                height: player.height+"px",
-                width: player.width+"px",
                 top: player.position.y - 50,
                 left: player.position.x + 30
             });
@@ -146,6 +150,7 @@ function generateMap(width, height) {
     function isoTile(filename) {
       return function(x, y) {
         var tile = PIXI.Sprite.fromFrame(filename);
+        tile.buttonMode = true;
         tile.position.x = x;
         tile.position.y = y;
 

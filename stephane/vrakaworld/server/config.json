@@ -1,0 +1,10 @@
+{
+    "port": 8000,
+    "debug_level": "debug",
+    "worlds": {
+        "main": {
+            "nb_players": 10,
+            "map_filepath": "./server/maps/world_server.json"
+        }
+    }
+}

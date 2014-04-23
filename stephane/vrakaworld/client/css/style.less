@@ -1,0 +1,100 @@
+.game {
+    position: relative;
+    height: 400px;
+    width: 900px;
+    float: left;
+    margin: 0 10px;
+    border: 1px solid #000;
+    overflow: hidden;
+    display: block !important;
+
+    .map {
+        display: none;
+    }
+
+    .register{
+        width: 300px;
+        margin: 100px auto;
+        text-align: center;
+
+        button {
+            cursor: pointer;
+        }
+
+        input.error {
+            border: 2px solid #f00;
+        }
+    }
+
+    &.not-connected {
+        background: #ccc;
+    }
+
+    &.connected {
+        .register {
+            display: none;
+        }
+    }
+
+    .player {
+        position: absolute;
+        background-color: #333;
+
+        .name {
+            position: relative;
+            top: -12px;
+            font-size: 10px;
+        }
+
+        .talk {
+            position: relative;
+            top: -80px;
+            background: url("/img/text-bubble.png") no-repeat;
+            width: 100px;
+            height: 75px;
+            left: 18px;
+            padding: 25px;
+        }
+
+        &.current {
+            cursor: pointer;
+            border: 1px dashed #0F0;
+            z-index: 99;
+        }
+
+        .actions{
+            width: 100px;
+            font-size: 10px;
+            position: relative;
+            top: -10px;
+            right: -30px;
+            border: 1px solid #ccc;
+            display: none;
+
+            ul{
+                margin: 0;
+                list-style-type: none;
+                padding: 0;
+            }
+            li{
+                background-color: #ccc;
+                padding: 5px;
+            }
+            li:nth-child(odd) {
+                background-color: #bbb;
+            }
+            li:hover{
+                background-color: #eee;
+            }
+        }
+    }
+
+}
+
+
+.game-state {
+    display: none;
+    margin: 0 10px;
+    border: 1px solid #600;
+    float: left;
+}

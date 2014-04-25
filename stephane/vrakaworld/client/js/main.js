@@ -1,4 +1,4 @@
-socket = io.connect('http://localhost:8000');
+socket = io.connect('http://localhost:1337');
 var player = {};
 
 function logMessages(message) {

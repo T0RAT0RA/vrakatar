@@ -1,7 +1,9 @@
 var fs = require('fs');
 
 function main(config) {
-    var server = require('socket.io').listen(config.port, {log: false}),
+    var socketio = require('socket.io'),
+        socketioWildcard = require('socket.io-wildcard'),
+        server = socketioWildcard(socketio).listen(config.port, {log: false}),
         WorldServer = require("./worldserver"),
         Log = require('log'),
         _ = require('underscore'),
@@ -19,9 +21,15 @@ function main(config) {
     log.info("Starting Vrakatar world game server...");
 
     server.sockets.on("connection", function(socket) {
-        log.debug("connection");
         world = worlds[0];
-        world.connect_callback(new Player({socket: socket, worldServer: world}));
+        new Player({
+            socket: socket,
+            world: world,
+            position: {
+                x: 100,
+                y: 100,
+            }
+        });
     });
 
     _.each(config.worlds, function(world_config, id) {

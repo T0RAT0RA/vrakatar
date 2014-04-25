@@ -1,22 +1,48 @@
-
 var cls = require("./lib/class"),
-    _ = require("underscore");
+    _ = require("underscore"),
+    Types = require("../../shared/js/gametypes");
 
 module.exports = Player = Class.extend({
     init: function(config) {
         var self = this;
 
-        this.server = config.worldServer;
         this.socket = config.socket;
-        this.id     = this.socket.id;
 
-        this.name = config.name || "Lorem ipsum";
-        this.x = 0;
-        this.y = 0;
+        this._super(this.socket.id, "player", config);
 
-        this.socket.on("disconnect", function() {
-            if(self.exit_callback) {
-                self.exit_callback();
+        this.hasEnteredGame = false;
+
+        this.socket.on("*", function(event) {
+            var action  = event.name,
+                data    = event.args[0];
+
+            if (Types.Messages.INIT == action) {
+                self.name = data.name;
+
+                self.send(Types.Messages.INIT, {id: self.id})
+
+                self.world.addPlayer(self);
+                self.world.enter_callback(self);
+
+                self.hasEnteredGame = true;
+            }
+            else if (Types.Messages.DISCONNECT == action) {
+                if(self.exit_callback) {
+                    self.exit_callback();
+                }
+            }
+            else if (Types.Messages.CHAT == action) {
+                self.world.broadcast(Types.Messages.CHAT, {id: self.id, name: self.name, message: data});
+            }
+            else if (Types.Messages.MOVE == action) {
+                self.destination.x = data.x;
+                self.destination.y = data.y;
+            }
+            else if (Types.Messages.ADD_NPC == action) {
+                self.world.addNpc();
+            }
+            else if (Types.Messages.REMOVE_NPCS == action) {
+                self.world.removeNpcs();
             }
         });
     },
@@ -25,7 +51,7 @@ module.exports = Player = Class.extend({
         this.exit_callback = callback;
     },
 
-    send: function(message) {
-        this.socket.emit(message);
+    send: function(name, message) {
+        this.socket.emit(name, message);
     }
 });

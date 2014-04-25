@@ -10,6 +10,15 @@
 
     .map {
         display: none;
+        height: 400px;
+        width: 900px;
+    }
+
+    .chat {
+        display: none;
+        position: absolute;
+        bottom: 0;
+        width: 300px;
     }
 
     .register{
@@ -36,7 +45,7 @@
         }
     }
 
-    .player {
+    .entity {
         position: absolute;
         background-color: #333;
 
@@ -44,6 +53,17 @@
             position: relative;
             top: -12px;
             font-size: 10px;
+        }
+
+        .say {
+            position: relative;
+            top: -50px;
+            font-size: 14px;
+            background-color: #0C35D6;
+            border-radius: 5px;
+            padding: 0px 10px;
+            color: #FFF;
+            font-family: "Comic Sans MS", cursive, sans-serif;
         }
 
         .talk {
@@ -97,4 +117,9 @@
     margin: 0 10px;
     border: 1px solid #600;
     float: left;
+
+    .messages {
+        height: 100px;
+        overflow: auto;
+    }
 }

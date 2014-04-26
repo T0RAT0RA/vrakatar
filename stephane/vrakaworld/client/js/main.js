@@ -72,6 +72,12 @@ function connect(name) {
         });
     });
 
+    //Despawn new entity
+    socket.on(Types.Messages.DESPAWN, function (data) {
+        $(".entity#"+data.id).hide("explode", function(){ this.remove(); });
+    })
+
+
     //Print game state:
     var pre = $(".game-state pre");
     socket.on(Types.Messages.STATE, function (data) {

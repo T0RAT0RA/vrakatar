@@ -4,10 +4,9 @@ function main(config) {
     var socketio = require('socket.io'),
         socketioWildcard = require('socket.io-wildcard'),
         server = socketioWildcard(socketio).listen(config.port, {log: false}),
-        WorldServer = require("./worldserver"),
+        Types = require("../../shared/js/gametypes"),
         Log = require('log'),
-        _ = require('underscore'),
-        worlds = [];
+        _ = require('underscore');
 
     switch(config.debug_level) {
         case "error":
@@ -18,24 +17,25 @@ function main(config) {
             log = new Log(Log.INFO); break;
     };
 
-    log.info("Starting Vrakatar world game server...");
+    log.info("Starting Vrakatar site game server...");
 
     server.sockets.on("connection", function(socket) {
-        world = worlds[0];
-        new Player({
-            socket: socket,
-            world: world,
-            position: {
-                x: 100,
-                y: 100,
-            }
+        socket.on(Types.Messages.INIT, function(data) {
+            npc = {
+                id: Date.now(),
+                name: data.username,
+                position: {
+                    x: 500,
+                    y: 300,
+                },
+                size: {
+                    width: 50,
+                    height: 100,
+                },
+                color: "#00F"
+            };
+            socket.emit(Types.Messages.SPAWN, npc);
         });
-    });
-
-    _.each(config.worlds, function(world_config, id) {
-        var world = new WorldServer('world_'+ (id), world_config.nb_players, server);
-        world.run(world_config.map_filepath);
-        worlds.push(world);
     });
 
     process.on('uncaughtException', function (e) {
@@ -55,7 +55,7 @@ function getConfigFile(path, callback) {
     });
 }
 
-var defaultConfigPath = './server/config.worlds.json';
+var defaultConfigPath = './server/config.site.json';
 
 //Start the server with a config file
 getConfigFile(defaultConfigPath, function(defaultConfig) {

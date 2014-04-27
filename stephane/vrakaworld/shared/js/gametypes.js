@@ -8,8 +8,48 @@ Types = {
         CHAT: 5,
         SPAWN: 6,
         DESPAWN: 7,
-        ADD_NPC: 8,
-        REMOVE_NPCS: 9,
+        ACTION: 8
+    },
+
+    Entities: {
+        PLAYER: 1,
+
+        // NPCs
+        BIBER: 2,
+        PIKACHU: 3,
+        WOLVERINE: 4,
+        NOBODY: 5,
+
+        // Objects
+        HAT: 6,
+    },
+
+    Clothes: {
+        HAIR1: "blond",
+        HAIR2: "red",
+    },
+
+    Actions: {
+        CHANGE_HAIR: {
+            id: 1,
+            label: "Changer de cheveux"
+        },
+        SAY_HI: {
+            id: 2,
+            label: "Dire salut"
+        },
+        PARTY: {
+            id: 3,
+            label: "-"
+        },
+        ADD_NPC: {
+            id: 4,
+            label: "Add NPC"
+        },
+        REMOVE_NPCS: {
+            id: 5,
+            label: "Remove NPCs"
+        },
     },
 
     Velocity: {

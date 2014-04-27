@@ -4,7 +4,17 @@ module.exports = Npc = Entity.extend({
     init: function(id, config) {
         config.name = config.name || this.getRandomName();
         config.color = config.color ||  "#A00";
-        this._super(id, "npc", config);
+        this._super(id, "npc", this.getRandomKind(), config);
+        this.hair = Types.Clothes.HAIR2;
+    },
+
+    getRandomKind: function() {
+        return _.shuffle([
+            "bieber",
+            "wolverine",
+            "pikachu",
+            "nobody",
+        ])[0];
     },
 
     getRandomName: function() {

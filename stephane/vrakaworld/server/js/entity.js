@@ -3,11 +3,12 @@ var cls = require("./lib/class"),
     Types = require("../../shared/js/gametypes");
 
 module.exports = Entity = Class.extend({
-    init: function(id, type, config) {
+    init: function(id, type, kind, config) {
         var self = this;
 
         this.id = id;
         this.type = type;
+        this.kind = kind;
         this.world = config.world;
         this.name = config.name || "Lorem ipsum";
         this.direction = config.direction || "s";
@@ -16,7 +17,7 @@ module.exports = Entity = Class.extend({
             x: 0,
             y: 0,
         };
-        this.color = config.color || "#000";
+        this.color = config.color || "transparent";
         this.size = config.size || {
             width: 30,
             height: 30,

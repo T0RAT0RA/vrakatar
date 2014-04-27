@@ -21,12 +21,13 @@ define(function() {
         createDiv: function() {
             this.div = $("<div>", {
                 "class": ["entity", this.type].join(" "),
-                id: this.id,
-                css: {
-                    left: this.position.x+"px",
-                    top: this.position.y+"px"
-                }
+                id: this.id
             }).appendTo(".game");
+
+            this.div.css({
+                top: Math.round(this.position.y - this.div.height()/2),
+                left: Math.round(this.position.x - this.div.width()/2)
+            });
         },
 
         update: function(entity){

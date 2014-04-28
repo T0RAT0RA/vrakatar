@@ -1,7 +1,7 @@
 .game {
     position: relative;
     height: 400px;
-    width: 900px;
+    width: 65%;
     float: left;
     margin: 0 10px;
     border: 1px solid #000;
@@ -51,6 +51,7 @@
     margin: 0 10px;
     border: 1px solid #600;
     float: left;
+    width: 30%;
 
     .messages {
         height: 100px;
@@ -98,6 +99,7 @@
             .hair {
                 &[data-type=blond] { background-position: unit(-@player_width*3, px) 0px; }
                 &[data-type=red] { background-position: unit(-@player_width*6, px) 0px; }
+                &[data-type=ponytail-red] { background-position: unit(-@player_width*9, px) 0px; }
             }
         }
         &[data-direction=w] {
@@ -105,6 +107,7 @@
             .hair {
                 &[data-type=blond] { background-position: unit(-@player_width*3, px) unit(-@player_height, px); }
                 &[data-type=red] { background-position: unit(-@player_width*6, px) unit(-@player_height, px); }
+                &[data-type=ponytail-red] { background-position: unit(-@player_width*9, px) unit(-@player_height, px); }
             }
         }
         &[data-direction=e] {
@@ -112,6 +115,7 @@
             .hair {
                 &[data-type=blond] { background-position: unit(-@player_width*3, px) unit(-@player_height*2, px); }
                 &[data-type=red] { background-position: unit(-@player_width*6, px) unit(-@player_height*2, px); }
+                &[data-type=ponytail-red] { background-position: unit(-@player_width*9, px) unit(-@player_height*2, px); }
             }
         }
         &[data-direction=n] {
@@ -119,22 +123,9 @@
             .hair {
                 &[data-type=blond] { background-position: unit(-@player_width*3, px) unit(-@player_height*3, px); }
                 &[data-type=red] { background-position: unit(-@player_width*6, px) unit(-@player_height*3, px); }
+                &[data-type=ponytail-red] { background-position: unit(-@player_width*9, px) unit(-@player_height*3, px); }
             }
         }
-        /*
-        &[data-direction=sw] {
-            background-position: 0px -92px;
-        }
-        &[data-direction=nw] {
-            background-position: 0px -276px;
-        }
-        &[data-direction=ne] {
-            background-position: 0px -460px;
-        }
-        &[data-direction=se] {
-            background-position: 0px -644px;
-        }
-        */
     }
 
     .name {

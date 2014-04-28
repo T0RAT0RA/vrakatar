@@ -17,6 +17,7 @@ define(['entity'], function(Entity) {
             console.log(this.kind);
             this.talkCount = NpcTalk[this.kind]? NpcTalk[this.kind].length : 0;
             this.talkIndex = 0;
+            this.hair = config.hair;
         },
 
         talk: function() {

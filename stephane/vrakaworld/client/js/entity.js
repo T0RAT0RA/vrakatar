@@ -12,7 +12,6 @@ define(function() {
             this.color = config.color;
             this.position = config.position;
             this.size = config.size;
-            this.hair = config.hair;
             this.actionsAvailable = config.actionsAvailable;
 
             this.createDiv();

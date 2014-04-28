@@ -10,7 +10,7 @@ module.exports = Player = Class.extend({
 
         this._super(this.socket.id, "player", "player", config);
 
-        this.hair = Types.Clothes.HAIR1;
+        this.hair = Types.Clothes.HAIR.BLOND;
         this.hasEnteredGame = false;
         this.actionsAvailable = [Types.Actions.CHANGE_HAIR];
 
@@ -72,7 +72,14 @@ module.exports = Player = Class.extend({
     },
 
     toggleHair: function() {
-        var new_hair = (this.hair == "blond")? "red" : "blond";
+        var new_hair = Types.Clothes.HAIR.BLOND;
+
+        if (_.isEqual(this.hair, Types.Clothes.HAIR.BLOND)) {
+            new_hair = Types.Clothes.HAIR.RED;
+        } else if (_.isEqual(this.hair, Types.Clothes.HAIR.RED)){
+            new_hair = Types.Clothes.HAIR.WEIRD;
+        }
+
         this.setHair(new_hair);
     },
 

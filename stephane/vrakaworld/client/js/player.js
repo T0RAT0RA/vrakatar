@@ -2,6 +2,7 @@ define(['entity'], function(Entity) {
 
     var Player = Entity.extend({
         init: function(id, config) {
+            this.hair = config.hair;
             this._super(id, "player", Types.Entities.PLAYER, config);
             this.isCurrentPlayer = false;
         },
@@ -44,10 +45,7 @@ define(['entity'], function(Entity) {
 
             //Entity hair div
             if (this.hair) {
-                $("<div>", {
-                    "class": "hair",
-                    "data-type": this.hair,
-                }).appendTo(this.div);
+                this.updateHairDiv(this.hair);
             }
 
             //Entity name div
@@ -65,9 +63,22 @@ define(['entity'], function(Entity) {
             }).appendTo(this.div);
         },
 
+        updateHairDiv: function(hair){
+            var self = this;
+            this.hair = hair;
+
+            this.div.find(".hair").remove();
+            _.each(this.hair, function(type) {
+                $("<div>", {"class": "hair", "data-type": type}).prependTo(self.div);
+            });
+        },
+
         update: function(player){
             this._super(player);
-            this.div.find(".hair").attr("data-type", player.hair);
+
+            if (!_.isEqual(player.hair, this.hair)) {
+                this.updateHairDiv(player.hair);
+            }
         }
     });
 

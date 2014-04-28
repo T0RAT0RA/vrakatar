@@ -61,6 +61,11 @@ define(["io", "game"], function (io, Game) {
 
         logMessages: function(message) {
             $("<div>").html(message).hide().prependTo(this.log_div).fadeIn().delay(5000).fadeOut();
+        },
+
+        printGameState: function (data) {
+            var pre = $(".game-state pre");
+            pre.html(JSON.stringify(data, null, 2));
         }
     });
 

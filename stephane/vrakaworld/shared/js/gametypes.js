@@ -25,8 +25,11 @@ Types = {
     },
 
     Clothes: {
-        HAIR1: "blond",
-        HAIR2: "red",
+        HAIR: {
+            BLOND: ["blond"],
+            RED: ["red", "ponytail-red"],
+            WEIRD: ["blond", "ponytail-red"],
+        }
     },
 
     Actions: {

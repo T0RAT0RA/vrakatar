@@ -46,7 +46,7 @@ define(["player", "npc"], function (Player, Npc) {
         },
 
         updateGameState: function(data) {
-            this.printGameState(data);
+            //this.app.printGameState(data);
 
             //update entities
             for (i in data.entities) {
@@ -80,7 +80,6 @@ define(["player", "npc"], function (Player, Npc) {
                 if (entity.id == this.player.id) {
                     player.setCurrentPlayer();
                 }
-
                 this.entities[player.id] = player;
             }
             if (entity.type == "npc") {
@@ -106,7 +105,9 @@ define(["player", "npc"], function (Player, Npc) {
                     }
                     //Else, send the message
                     else {
-                        self.socket.emit(Types.Messages.CHAT, $(".chat").val());
+                        if ($(".chat").val()) {
+                            self.socket.emit(Types.Messages.CHAT, $(".chat").val());
+                        }
                         $(".chat").val("").hide();
                     }
                 }
@@ -127,11 +128,6 @@ define(["player", "npc"], function (Player, Npc) {
                     y: e.pageY - offset.top,
                 });
             });
-        },
-
-        printGameState: function (data) {
-            var pre = $(".game-state pre");
-            pre.html(JSON.stringify(data, null, 2));
         }
     });
 

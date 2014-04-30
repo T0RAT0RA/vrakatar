@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "private": true,
   "dependencies": {
-    "gm": "1.*"
+    "gm": "1.*",
+    "supervisor": "~0.5.7"
   }
 }

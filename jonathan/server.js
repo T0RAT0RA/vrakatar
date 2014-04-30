@@ -35,11 +35,25 @@ function generateImage(request){
 });
 */
 
-  gm('_example.jpg')
-  .resize(100, 100)
-  .autoOrient()
-  .write("test2.jpg", function (err) {
-    if (!err) console.log(' hooray! ');
+  gm('character.png')
+  .crop(32, 32, 0, 32)
+  .write("test2.png", function (err) {
+    if (!err){
+      console.log(' hooray! ');
+    }else{
+      console.log(err);
+    } 
+  });
+
+    gm('character.png')
+  .crop(32, 32, 3*32, 32)
+  .append("test2.png")
+  .write("test2.png", function (err) {
+    if (!err){
+      console.log(' hooray! ');
+    }else{
+      console.log(err);
+    } 
   });
 
 }

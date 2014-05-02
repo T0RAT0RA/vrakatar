@@ -22,40 +22,36 @@ console.log("Server has started.");
 }
 
 function generateImage(request){
-  var gm = require('gm');
-  //var fs = require('fs');
-  //var writeStream = fs.createWriteStream( "test.jpg", { encoding: 'base64' } );
+    var gm = require('gm');
+    //var fs = require('fs');
+    //var writeStream = fs.createWriteStream( "test.jpg", { encoding: 'base64' } );
 
+    var character = "character.png",
+        character_final = "character.final.png";
 
-/*gm('_example.jpg')
-.resize('200', '200')
-.stream(function (err, stdout, stderr) {
-  var writeStream = fs.createWriteStream('resized.jpg');
-  stdout.pipe(writeStream);
-});
-*/
+    gm(character)
+    .crop(32, 32, 0, 32)
+    .write("1"+character_final, function (err) {
+        if (err) {
+          console.log(err);
+        } 
+    });
 
-  gm('character.png')
-  .crop(32, 32, 0, 32)
-  .write("test2.png", function (err) {
-    if (!err){
-      console.log(' hooray! ');
-    }else{
-      console.log(err);
-    } 
-  });
+    gm(character)
+    .crop(32, 32, 3*32, 32)
+    .write("2"+character_final, function (err) {
+        if (err) {
+          console.log(err);
+        } 
+    });
 
-    gm('character.png')
-  .crop(32, 32, 3*32, 32)
-  .append("test2.png")
-  .write("test2.png", function (err) {
-    if (!err){
-      console.log(' hooray! ');
-    }else{
-      console.log(err);
-    } 
-  });
-
+    gm()
+    .in('-page', '+0+0')  // Custom place for each of the images
+    .in("1"+character_final)
+    .in('-page', '+32+0')
+    .in("2"+character_final)
+    .write(character_final, function (err) {
+        if (err) console.log(err);
+    });
 }
-
 start();

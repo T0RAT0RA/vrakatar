@@ -64,7 +64,7 @@ module.exports = Player = Class.extend({
     },
 
     isAdmin: function(new_hair) {
-        return this.name.match(/admin$/);
+        return (this.name && this.name.match(/admin$/));
     },
 
     setHair: function(new_hair) {

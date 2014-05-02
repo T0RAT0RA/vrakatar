@@ -53,6 +53,10 @@ Types = {
             id: 5,
             label: "Remove NPCs"
         },
+        GET_ITEM: {
+            id: 6,
+            label: "Prendre l'objet"
+        },
     },
 
     Velocity: {

@@ -9,7 +9,7 @@ var cls = require("./lib/class"),
 // ======= GAME SERVER ========
 
 module.exports = World = cls.Class.extend({
-    init: function(id, maxPlayers, websocketServer) {
+    init: function(id, maxPlayers, websocketServer, config) {
         var self = this;
 
         this.id = id;
@@ -54,6 +54,8 @@ module.exports = World = cls.Class.extend({
                 self.added_callback();
             }
         });
+
+        log.info(""+this.id+" created (capacity: "+this.maxPlayers+" players).");
     },
 
     onPlayerConnect: function(callback) {
@@ -88,7 +90,7 @@ module.exports = World = cls.Class.extend({
             self.broadcast(Types.Messages.STATE, self.getState());
         }, 1000 / this.ups);
 
-        log.info(""+this.id+" created (capacity: "+this.maxPlayers+" players).");
+        log.info(""+this.id+" running...");
     },
 
     updatePositions: function() {

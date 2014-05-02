@@ -4,9 +4,10 @@ function main(config) {
     var socketio = require('socket.io'),
         socketioWildcard = require('socket.io-wildcard'),
         server = socketioWildcard(socketio).listen(config.port, {log: false}),
-        Types = require("../../shared/js/gametypes"),
+        WorldServer = require("./worldserver"),
         Log = require('log'),
-        _ = require('underscore');
+        _ = require('underscore'),
+        worlds = [];
 
     switch(config.debug_level) {
         case "error":
@@ -21,28 +22,28 @@ function main(config) {
 
     server.sockets.on("connection", function(socket) {
         socket.on(Types.Messages.INIT, function(data) {
-            npc = {
-                id: Date.now(),
-                name: data.username,
+            var world = worlds[data.page];
+            if (!world) {
+                world = new WorldServer('world_site_'+data.page, 1, server, {ups: 1});
+                world.run();
+                worlds[data.page] = world;
+            }
+            new Player({
+                socket: socket,
+                world: world,
                 position: {
-                    x: 500,
-                    y: 300,
-                },
-                size: {
-                    width: 50,
-                    height: 100,
-                },
-                color: "#00F"
-            };
-            socket.emit(Types.Messages.SPAWN, npc);
+                    x: -100,
+                    y: -100,
+                }
+            });
         });
+        
     });
 
     process.on('uncaughtException', function (e) {
         log.error('uncaughtException: ' + e);
     });
 }
-
 
 function getConfigFile(path, callback) {
     fs.readFile(path, 'utf8', function(err, json_string) {

@@ -32,8 +32,8 @@ define(function() {
         update: function(entity){
             this.div.attr("data-direction", entity.direction);
             this.div.css({
-                top: Math.round(entity.position.y - this.div.height()/2),
-                left: Math.round(entity.position.x - this.div.width()/2)
+                top: entity.position.y,
+                left: entity.position.x
             });
         },
 

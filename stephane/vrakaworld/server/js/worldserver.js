@@ -1,6 +1,7 @@
 var cls = require("./lib/class"),
     _ = require("underscore"),
     Log = require('log'),
+    fs = require('fs'),
     Entity = require('./entity'),
     Player = require('./player'),
     Npc = require('./npc'),
@@ -17,7 +18,7 @@ module.exports = World = cls.Class.extend({
         this.server = websocketServer;
         this.ups = 20;
 
-        this.map = null;
+        this.map = config.map || {};
 
         this.allowDiagonals = false;
         this.entities   = {};
@@ -31,6 +32,15 @@ module.exports = World = cls.Class.extend({
         this.onPlayerEnter(function(player) {
             log.debug("Player " + player.name + " connected. " + player.id);
 
+
+            player.position = {
+                x: (this.map.startPosition)? this.map.startPosition.x : 500,
+                y: (this.map.startPosition)? this.map.startPosition.y : 200
+            };
+
+            //Init player object on client side
+            player.send(Types.Messages.INIT, self.getCleanEntity(player))
+
             player.onExit(function() {
                 log.info(player.name + " has left the game.");
 
@@ -42,10 +52,14 @@ module.exports = World = cls.Class.extend({
                 }
             });
 
+            //Send the map data
+            player.send(Types.Messages.MAP, {map: self.map});
+
             //Send each existing entity to the player game
             _.each(self.entities, function(entity){
                 player.send(Types.Messages.SPAWN, self.getCleanEntity(entity));
             });
+
             self.addPlayer(player);
             player.hasEnteredGame = true;
             self.server.sockets.emit(Types.Messages.MESSAGE, "Player " + player.name + " has joined the game.");
@@ -78,7 +92,7 @@ module.exports = World = cls.Class.extend({
         this.removed_callback = callback;
     },
 
-    run: function(mapFilePath) {
+    run: function() {
         var self = this;
 
         setInterval(function() {

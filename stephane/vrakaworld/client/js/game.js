@@ -1,4 +1,4 @@
-define(["player", "npc"], function (Player, Npc) {
+define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
 
     var Game = Class.extend({
         init: function(app, socket, username) {
@@ -8,7 +8,10 @@ define(["player", "npc"], function (Player, Npc) {
             this.socket = socket;
             this.ups = 20;
 
-            this.map = null;
+            this.map        = null;
+            this.width      = 900;
+            this.height     = 400;
+            this.render     = new GameRenderer(this);
 
             this.player     = {name: username};
             this.entities   = {};
@@ -20,6 +23,7 @@ define(["player", "npc"], function (Player, Npc) {
             socket.on(Types.Messages.DESPAWN, this.removeEntity.bind(this));
             socket.on(Types.Messages.CHAT, this.onChat.bind(this));
             socket.on(Types.Messages.INIT, this.initPlayer.bind(this));
+            socket.on(Types.Messages.MAP, this.render.initMap.bind(this.render));
             socket.on(Types.Messages.MESSAGE, this.app.logMessages.bind(this.app));
             socket.on("disconnect", this.app.game_disconnect_callback.bind(this.app));
 
@@ -39,10 +43,6 @@ define(["player", "npc"], function (Player, Npc) {
 
         initPlayer: function (player) {
             this.player = player;
-        },
-
-        run: function(mapFilePath) {
-
         },
 
         updateGameState: function(data) {
@@ -120,7 +120,7 @@ define(["player", "npc"], function (Player, Npc) {
             $(".game").on("click", ".player", function(e) {
                 $(this).find(".actions").toggle();
             });
-
+            /*
             $(".game").on("click", ".map", function(e) {
                 var offset = $(this).offset();
                 self.socket.emit(Types.Messages.MOVE, {
@@ -128,6 +128,7 @@ define(["player", "npc"], function (Player, Npc) {
                     y: e.pageY - offset.top,
                 });
             });
+            */
         }
     });
 

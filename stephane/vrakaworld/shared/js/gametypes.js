@@ -8,7 +8,8 @@ Types = {
         CHAT: 5,
         SPAWN: 6,
         DESPAWN: 7,
-        ACTION: 8
+        ACTION: 8,
+        MAP: 9
     },
 
     Entities: {

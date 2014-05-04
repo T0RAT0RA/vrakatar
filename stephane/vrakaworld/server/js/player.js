@@ -26,8 +26,6 @@ module.exports = Player = Class.extend({
             if (Types.Messages.INIT == action) {
                 self.name = data.name;
 
-                self.send(Types.Messages.INIT, {id: self.id})
-
                 if (self.isAdmin()) {
                     self.actionsAvailable.push(Types.Actions.ADD_NPC);
                     self.actionsAvailable.push(Types.Actions.REMOVE_NPCS);

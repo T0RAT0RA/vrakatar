@@ -21,28 +21,28 @@ function main(config) {
     log.info("Starting Vrakatar world game server...");
 
     server.sockets.on("connection", function(socket) {
-        world = worlds[0];
+        //world = worlds["world_main"];
+        world = worlds["world_restaurant"];
         new Player({
             socket: socket,
-            world: world,
-            position: {
-                x: 100,
-                y: 100,
-            }
+            world: world
         });
     });
 
-    _.each(config.worlds, function(world_config, id) {
-        var world = new WorldServer('world_'+ (id), world_config.nb_players, server);
-        world.run(world_config.map_filepath);
-        worlds.push(world);
+    //Read the world maps folder
+    var files = fs.readdirSync(config.worldsFolder);
+    _.each(files, function(file) {
+        getConfigFile(config.worldsFolder + file, function(world_config){
+            var world = new WorldServer('world_'+ (world_config.id), world_config.nb_players, server, {map: world_config.map});
+            world.run();
+            worlds[world.id] = world;
+        });
     });
 
     process.on('uncaughtException', function (e) {
         log.error('uncaughtException: ' + e);
     });
 }
-
 
 function getConfigFile(path, callback) {
     fs.readFile(path, 'utf8', function(err, json_string) {

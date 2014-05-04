@@ -12,7 +12,7 @@ module.exports = Player = Class.extend({
 
         this.hair = Types.Clothes.HAIR.BLOND;
         this.hasEnteredGame = false;
-        this.actionsAvailable = [Types.Actions.CHANGE_HAIR];
+        this.actionsAvailable = [Types.Actions.CHANGE_HAIR, Types.Actions.CHANGE_WORLD];
 
         this.socket.on("disconnect", function() {
             if(self.exit_callback) {
@@ -50,6 +50,7 @@ module.exports = Player = Class.extend({
                     if (data.id == Types.Actions.CHANGE_HAIR.id) { self.toggleHair(); }
                     if (data.id == Types.Actions.ADD_NPC.id) { self.world.addNpc(); }
                     if (data.id == Types.Actions.REMOVE_NPCS.id) { self.world.removeNpcs(); }
+                    if (data.id == Types.Actions.CHANGE_WORLD.id) {  }
                 }
             }
             else if (Types.Messages.ADD_NPC == action) {

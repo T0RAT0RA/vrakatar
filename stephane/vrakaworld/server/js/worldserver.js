@@ -249,7 +249,10 @@ module.exports = World = cls.Class.extend({
     },
 
     broadcast: function(type, message) {
-        this.server.sockets.emit(type, message);
+        //this.server.sockets.emit(type, message);
+        _.each(this.players, function(player){
+            player.socket.emit(type, message);
+        });
     },
 
     getCleanEntity: function(entity) {
@@ -258,11 +261,13 @@ module.exports = World = cls.Class.extend({
 
     getState: function() {
         var self = this,
-            filtered_players = _.map(this.entities, function(entity){ return self.getCleanEntity(entity); });
+            filtered_entities = _.map(this.entities, function(entity){ return self.getCleanEntity(entity); });
+
         return {
-            server_time: new Date().toLocaleTimeString(),
-            entities_count: Object.keys(this.players).length,
-            entities: filtered_players,
+            world: self.id,
+            world_time: new Date().toLocaleTimeString(),
+            entities_count: Object.keys(filtered_entities).length,
+            entities: filtered_entities,
         }
     }
 });

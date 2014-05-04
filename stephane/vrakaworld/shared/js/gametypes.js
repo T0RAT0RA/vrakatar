@@ -38,26 +38,30 @@ Types = {
             id: 1,
             label: "Changer de cheveux"
         },
-        SAY_HI: {
+        GET_ITEM: {
             id: 2,
+            label: "Prendre l'objet"
+        },
+        CHANGE_WORLD: {
+            id: 3,
+            label: "Changer de monde"
+        },
+        SAY_HI: {
+            id: 4,
             label: "Dire salut"
         },
         PARTY: {
-            id: 3,
+            id: 5,
             label: "-"
         },
         ADD_NPC: {
-            id: 4,
+            id: 6,
             label: "Add NPC"
         },
         REMOVE_NPCS: {
-            id: 5,
+            id: 7,
             label: "Remove NPCs"
-        },
-        GET_ITEM: {
-            id: 6,
-            label: "Prendre l'objet"
-        },
+        }
     },
 
     Velocity: {

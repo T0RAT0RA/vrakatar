@@ -30,6 +30,8 @@ define(function() {
         },
 
         update: function(entity){
+            this.velocity = entity.velocity;
+
             this.div.attr("data-direction", entity.direction);
             this.div.css({
                 top: entity.position.y,

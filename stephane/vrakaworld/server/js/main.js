@@ -21,8 +21,7 @@ function main(config) {
     log.info("Starting Vrakatar world game server...");
 
     server.sockets.on("connection", function(socket) {
-        //world = worlds["world_main"];
-        world = worlds["world_restaurant"];
+        world = worlds["world_main"];
         new Player({
             socket: socket,
             world: world

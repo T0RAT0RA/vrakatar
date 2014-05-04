@@ -17,8 +17,8 @@ define(["lib/pixi"], function (PIXI) {
             this.map = config.map;
 
             var tileType, x, y, isoX, isoY, idx
-                xOffset = this.map.tilesOffset.x || 0,
-                yOffset = this.map.tilesOffset.y || 0;
+                xOffset = (this.map.tilesOffset)? this.map.tilesOffset.x : 0,
+                yOffset = (this.map.tilesOffset)? this.map.tilesOffset.y : 0;
 
             //Draw background images
             if (this.map.background) {

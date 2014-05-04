@@ -2,6 +2,10 @@
     "id": "main",
     "nb_players": 10,
     "map": {
+        "size": {
+            "width": 900,
+            "height": 500
+        },
         "tileWidth": 32,
         "tileHeight": 32,
         "tilesOffset": {

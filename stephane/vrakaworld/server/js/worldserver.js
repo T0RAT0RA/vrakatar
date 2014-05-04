@@ -200,7 +200,6 @@ module.exports = World = cls.Class.extend({
     },
 
     removePlayer: function(player) {
-        //player.broadcast(player.despawn());
         this.removeEntity(player);
         delete this.players[player.id];
     },

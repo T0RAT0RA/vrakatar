@@ -2,6 +2,10 @@
     "id": "restaurant",
     "nb_players": 10,
     "map": {
+        "size": {
+            "width": 740,
+            "height": 510
+        },
         "startPosition": {
             "x": 520,
             "y": 280

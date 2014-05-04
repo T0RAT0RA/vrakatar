@@ -6,7 +6,7 @@ define(["lib/pixi"], function (PIXI) {
 
             this.game       = game;
             this.stage      = new PIXI.Stage(0xFFFFFF, true);
-            this.renderer   = PIXI.autoDetectRenderer(this.game.width, this.game.height);
+            this.renderer   = null;
         },
 
         initMap: function (config) {
@@ -14,7 +14,8 @@ define(["lib/pixi"], function (PIXI) {
 
             var self = this;
 
-            this.map = config.map;
+            this.map        = config.map;
+            this.renderer   = PIXI.autoDetectRenderer(this.map.size.width, this.map.size.height);
 
             var tileType, x, y, isoX, isoY, idx
                 xOffset = (this.map.tilesOffset)? this.map.tilesOffset.x : 0,

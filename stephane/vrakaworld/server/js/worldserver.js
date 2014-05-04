@@ -32,7 +32,6 @@ module.exports = World = cls.Class.extend({
         this.onPlayerEnter(function(player) {
             log.debug("Player " + player.name + " connected. " + player.id);
 
-
             player.position = {
                 x: (this.map.startPosition)? this.map.startPosition.x : 500,
                 y: (this.map.startPosition)? this.map.startPosition.y : 200
@@ -45,7 +44,7 @@ module.exports = World = cls.Class.extend({
                 log.info(player.name + " has left the game.");
 
                 self.removePlayer(player);
-                self.server.sockets.emit(Types.Messages.MESSAGE, player.name + " has left the game.");
+                self.broadcast(Types.Messages.MESSAGE, player.name + " has left the game.");
 
                 if(self.removed_callback) {
                     self.removed_callback();
@@ -55,14 +54,15 @@ module.exports = World = cls.Class.extend({
             //Send the map data
             player.send(Types.Messages.MAP, {map: self.map});
 
+            self.addPlayer(player);
+
             //Send each existing entity to the player game
             _.each(self.entities, function(entity){
                 player.send(Types.Messages.SPAWN, self.getCleanEntity(entity));
             });
 
-            self.addPlayer(player);
             player.hasEnteredGame = true;
-            self.server.sockets.emit(Types.Messages.MESSAGE, "Player " + player.name + " has joined the game.");
+            self.broadcast(Types.Messages.MESSAGE, "Player " + player.name + " has joined the game.");
 
             if(self.added_callback) {
                 self.added_callback();
@@ -182,7 +182,7 @@ module.exports = World = cls.Class.extend({
 
     addEntity: function(entity) {
         this.entities[entity.id] = entity;
-        this.server.sockets.emit(Types.Messages.SPAWN, this.getCleanEntity(entity));
+        this.broadcast(Types.Messages.SPAWN, this.getCleanEntity(entity));
     },
 
     removeEntity: function(entity) {
@@ -191,7 +191,7 @@ module.exports = World = cls.Class.extend({
         }
         entity.destroy();
 
-        this.server.sockets.emit(Types.Messages.DESPAWN, {id: entity.id});
+        this.broadcast(Types.Messages.DESPAWN, {id: entity.id});
     },
 
     addPlayer: function(player) {
@@ -220,7 +220,7 @@ module.exports = World = cls.Class.extend({
         this.npcs[npc.id] = npc;
 
         //temporary message
-        this.server.sockets.emit(Types.Messages.MESSAGE, "Npc " + npc.name + " has joined the game.");
+        this.broadcast(Types.Messages.MESSAGE, "Npc " + npc.name + " has joined the game.");
 
         return npc;
     },
@@ -230,7 +230,7 @@ module.exports = World = cls.Class.extend({
         delete this.npcs[npc.id];
 
         //temporary message
-        this.server.sockets.emit(Types.Messages.MESSAGE, "Npc " + npc.name + " has left the game.");
+        this.broadcast(Types.Messages.MESSAGE, "Npc " + npc.name + " has left the game.");
     },
 
     removeNpcs: function() {

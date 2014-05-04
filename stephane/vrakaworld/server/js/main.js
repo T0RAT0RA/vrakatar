@@ -5,6 +5,7 @@ function main(config) {
         socketioWildcard = require('socket.io-wildcard'),
         server = socketioWildcard(socketio).listen(config.port, {log: false}),
         WorldServer = require("./worldserver"),
+        Types = require("../../shared/js/gametypes");
         Log = require('log'),
         _ = require('underscore'),
         worlds = [];
@@ -21,11 +22,18 @@ function main(config) {
     log.info("Starting Vrakatar world game server...");
 
     server.sockets.on("connection", function(socket) {
-        //world = worlds["world_main"];
-        world = worlds["world_restaurant"];
-        new Player({
-            socket: socket,
-            world: world
+        socket.on(Types.Messages.ENTERWORLD, function(data) {
+            if (worlds["world_" + data.world]) {
+                world = worlds["world_" + data.world]
+            } else {
+                console.log("Wordl world_" + data.world + "doesn't exist.")
+                world = worlds["world_main"];
+            }
+
+            new Player({
+                socket: socket,
+                world: world
+            });
         });
     });
 

@@ -1,13 +1,14 @@
 define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
 
     var Game = Class.extend({
-        init: function(app, socket, username) {
+        init: function(app, socket, username, worldId) {
             var self = this;
 
             this.app = app;
             this.socket = socket;
             this.ups = 20;
 
+            this.worldId    = worldId;
             this.map        = null;
             this.width      = 900;
             this.height     = 400;
@@ -28,7 +29,8 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
             socket.on("disconnect", this.app.game_disconnect_callback.bind(this.app));
 
             //Init player data
-            socket.emit(Types.Messages.INIT, {name: self.player.name});
+            socket.emit(Types.Messages.ENTERWORLD, {world: this.worldId});
+            socket.emit(Types.Messages.INIT, {name: this.player.name});
 
             console.log("Game - init");
 

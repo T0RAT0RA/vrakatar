@@ -19,21 +19,22 @@ define(["io", "game"], function (io, Game) {
 
             //Register player
             $(".game .register").on("submit", function(){
-                var name = $(this).find(".name");
+                var name = $(this).find(".name"),
+                    world = $(this).find(".world");
 
                 if (!name.val()){
                     name.addClass("error");
                     name.focus();
                 } else {
                     name.removeClass("error");
-                    self.connect(name.val());
+                    self.connect(name.val(), world.val());
                 }
 
                 return false;
             });
         },
 
-        connect: function(username) {
+        connect: function(username, worldId) {
             console.log("App - connect");
             this.onGameInit(function(){
                 console.log("App - onGameInit");
@@ -48,7 +49,7 @@ define(["io", "game"], function (io, Game) {
                 $(".reload").append($("<div>").html("You've been disconnected. Please reload the page"));
             });
 
-            game = new Game(this, socket, username);
+            game = new Game(this, socket, username, worldId);
         },
 
         onGameInit: function(callback) {

@@ -9,7 +9,8 @@ Types = {
         SPAWN: 6,
         DESPAWN: 7,
         ACTION: 8,
-        MAP: 9
+        MAP: 9,
+        ENTERWORLD: 10
     },
 
     Entities: {

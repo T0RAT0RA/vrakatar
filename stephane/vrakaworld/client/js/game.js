@@ -13,6 +13,7 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
             this.width      = 900;
             this.height     = 400;
             this.render     = new GameRenderer(this);
+            this.lastUpdate = 0;
 
             this.player     = {name: username};
             this.entities   = {};
@@ -48,6 +49,11 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
         },
 
         updateGameState: function(data) {
+            //Temporariy solution to reduce processing on mobiles
+            if (this.app.isMobile() && Date.now() - this.lastUpdate <= 200) {
+                return;
+            }
+
             //this.app.printGameState(data);
 
             //update entities
@@ -57,6 +63,8 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
                     this.entities[entity.id].update(entity);
                 }
             }
+
+            this.lastUpdate = Date.now();
         },
 
         onChat: function (data) {

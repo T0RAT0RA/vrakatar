@@ -1,5 +1,10 @@
 define(["io", "game"], function (io, Game) {
-    var socket = io.connect('http://localhost:1337'),
+    //Dirty hack to get the socket hostname from io
+    //Don't ever, ever use this
+    for (hostname in io.sockets) break;
+    console.log("hostname", hostname)
+
+    var socket = io.connect("http://"+hostname),
         game = {};
 
     var App = Class.extend({

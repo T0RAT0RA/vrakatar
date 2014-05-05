@@ -6,12 +6,10 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
 
             this.app = app;
             this.socket = socket;
-            this.ups = 20;
+            this.mobileUps = 10;
 
             this.worldId    = worldId;
             this.map        = null;
-            this.width      = 900;
-            this.height     = 400;
             this.render     = new GameRenderer(this);
             this.lastUpdate = 0;
 
@@ -50,7 +48,7 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
 
         updateGameState: function(data) {
             //Temporariy solution to reduce processing on mobiles
-            if (this.app.isMobile() && Date.now() - this.lastUpdate <= 200) {
+            if (this.app.isMobile() && Date.now() - this.lastUpdate <= 1000/this.mobileUps) {
                 return;
             }
 

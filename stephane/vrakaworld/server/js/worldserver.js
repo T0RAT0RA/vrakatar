@@ -101,10 +101,34 @@ module.exports = World = cls.Class.extend({
             //log.debug("players: ", _.pluck(self.players, 'name'));
             //log.debug("npcs: ", _.pluck(self.npcs, 'name'));
             self.updatePositions();
+            self.updateActions();
             self.broadcast(Types.Messages.STATE, self.getState());
         }, 1000 / this.ups);
 
         log.info(""+this.id+" running...");
+    },
+
+    updateActions: function() {
+        _.each(this.entities, function(entity) {
+            //Check actions
+            if (entity.action) {
+                switch(entity.action.id) {
+                    case Types.Actions.IDEA.id:
+                        break;
+                    default: break;
+                }
+
+                if (entity.action.duration){
+                    if(!entity.action.startedAt) {
+                        entity.action.startedAt = Date.now();
+                    }
+
+                    if (Date.now() - entity.action.startedAt >= entity.action.duration) {
+                        delete entity.action;
+                    }
+                }
+            }
+        });
     },
 
     updatePositions: function() {
@@ -130,7 +154,7 @@ module.exports = World = cls.Class.extend({
 
                 if (entity.position.x < entity.destination.x - offset.x) {
                     entity.velocity.x = Types.Velocity.X;
-                } else if (entity.position.x > entity.destination.x + offset.x) {
+                } else if (entity.position.x >= entity.destination.x + offset.x) {
                     entity.velocity.x = -Types.Velocity.X;
                 } else {
                     entity.velocity.x = 0;
@@ -139,7 +163,7 @@ module.exports = World = cls.Class.extend({
 
                 if (entity.position.y < entity.destination.y - offset.y) {
                     entity.velocity.y = Types.Velocity.Y;
-                } else if (entity.position.y > entity.destination.y + offset.y) {
+                } else if (entity.position.y >= entity.destination.y + offset.y) {
                     entity.velocity.y = -Types.Velocity.Y;
                 } else {
                     entity.velocity.y = 0;

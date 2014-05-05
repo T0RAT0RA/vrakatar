@@ -43,9 +43,10 @@ Types = {
             id: 2,
             label: "Prendre l'objet"
         },
-        CHANGE_WORLD: {
+        IDEA: {
             id: 3,
-            label: "Changer de monde"
+            label: "J'ai une idée",
+            duration: 2000
         },
         SAY_HI: {
             id: 4,

@@ -52,7 +52,7 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
                 return;
             }
 
-            //this.app.printGameState(data);
+            this.app.printGameState(data);
 
             //update entities
             for (i in data.entities) {

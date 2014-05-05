@@ -81,27 +81,6 @@ define(['entity'], function(Entity) {
             if (!_.isEqual(player.hair, this.hair)) {
                 this.updateHairDiv(player.hair);
             }
-
-            if (this.isMoving()) {
-                this.animate();
-            }
-        },
-
-        isMoving: function(){
-            return (this.velocity && (this.velocity.x || this.velocity.y));
-        },
-
-        animate: function(){
-            var time = Date.now();
-
-            if (time - this.lastCheck >= 1000/25) {
-                this.animation++;
-                if (this.animation >= 3) this.animation = 0;
-
-                this.div.css({"background-position-x": "-" + this.animation*32 + "px"});
-                //Animate the hair: this.div.find(".hair")
-                this.lastCheck = Date.now();
-            }
         }
     });
 

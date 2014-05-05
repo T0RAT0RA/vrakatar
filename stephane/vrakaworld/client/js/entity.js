@@ -37,10 +37,33 @@ define(function() {
                 top: entity.position.y,
                 left: entity.position.x
             });
+
+            if (this.isMoving()) {
+                this.animate();
+            }
         },
 
         setName: function(name) {
             this.name = name;
+        },
+
+
+        isMoving: function(){
+            return (this.velocity && (this.velocity.x || this.velocity.y));
+        },
+
+        animate: function(){
+            var time = Date.now();
+
+            if (time - this.lastCheck >= 1000/25) {
+                this.animation++;
+                if (this.animation >= 3) this.animation = 0;
+
+                this.div.css({"background-position-x": "-" + this.animation*32 + "px"});
+                //Animate the hair: this.div.find(".hair")
+                this.div.find(".hair[data-type=blond]").css({"background-position-x": "-" + (3*32 + this.animation*32) + "px"});
+                this.lastCheck = Date.now();
+            }
         }
     });
 

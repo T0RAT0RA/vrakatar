@@ -1,6 +1,7 @@
 var cls = require("./lib/class"),
     _ = require("underscore"),
     Log = require('log'),
+    fs = require('fs'),
     Entity = require('./entity'),
     Player = require('./player'),
     Npc = require('./npc'),
@@ -9,7 +10,7 @@ var cls = require("./lib/class"),
 // ======= GAME SERVER ========
 
 module.exports = World = cls.Class.extend({
-    init: function(id, maxPlayers, websocketServer) {
+    init: function(id, maxPlayers, websocketServer, config) {
         var self = this;
 
         this.id = id;
@@ -17,7 +18,7 @@ module.exports = World = cls.Class.extend({
         this.server = websocketServer;
         this.ups = 20;
 
-        this.map = null;
+        this.map = config.map || {};
 
         this.allowDiagonals = false;
         this.entities   = {};
@@ -31,29 +32,44 @@ module.exports = World = cls.Class.extend({
         this.onPlayerEnter(function(player) {
             log.debug("Player " + player.name + " connected. " + player.id);
 
+            player.position = {
+                x: (this.map.startPosition)? this.map.startPosition.x : 500,
+                y: (this.map.startPosition)? this.map.startPosition.y : 200
+            };
+
+            //Init player object on client side
+            player.send(Types.Messages.INIT, self.getCleanEntity(player))
+
             player.onExit(function() {
                 log.info(player.name + " has left the game.");
 
                 self.removePlayer(player);
-                self.server.sockets.emit(Types.Messages.MESSAGE, player.name + " has left the game.");
+                self.broadcast(Types.Messages.MESSAGE, player.name + " has left the game.");
 
                 if(self.removed_callback) {
                     self.removed_callback();
                 }
             });
 
+            //Send the map data
+            player.send(Types.Messages.MAP, {map: self.map});
+
+            self.addPlayer(player);
+
             //Send each existing entity to the player game
             _.each(self.entities, function(entity){
                 player.send(Types.Messages.SPAWN, self.getCleanEntity(entity));
             });
-            self.addPlayer(player);
+
             player.hasEnteredGame = true;
-            self.server.sockets.emit(Types.Messages.MESSAGE, "Player " + player.name + " has joined the game.");
+            self.broadcast(Types.Messages.MESSAGE, "Player " + player.name + " has joined the game.");
 
             if(self.added_callback) {
                 self.added_callback();
             }
         });
+
+        log.info(""+this.id+" created (capacity: "+this.maxPlayers+" players).");
     },
 
     onPlayerConnect: function(callback) {
@@ -76,7 +92,7 @@ module.exports = World = cls.Class.extend({
         this.removed_callback = callback;
     },
 
-    run: function(mapFilePath) {
+    run: function() {
         var self = this;
 
         setInterval(function() {
@@ -85,10 +101,34 @@ module.exports = World = cls.Class.extend({
             //log.debug("players: ", _.pluck(self.players, 'name'));
             //log.debug("npcs: ", _.pluck(self.npcs, 'name'));
             self.updatePositions();
+            self.updateActions();
             self.broadcast(Types.Messages.STATE, self.getState());
         }, 1000 / this.ups);
 
-        log.info(""+this.id+" created (capacity: "+this.maxPlayers+" players).");
+        log.info(""+this.id+" running...");
+    },
+
+    updateActions: function() {
+        _.each(this.entities, function(entity) {
+            //Check actions
+            if (entity.action) {
+                switch(entity.action.id) {
+                    case Types.Actions.IDEA.id:
+                        break;
+                    default: break;
+                }
+
+                if (entity.action.duration){
+                    if(!entity.action.startedAt) {
+                        entity.action.startedAt = Date.now();
+                    }
+
+                    if (Date.now() - entity.action.startedAt >= entity.action.duration) {
+                        delete entity.action;
+                    }
+                }
+            }
+        });
     },
 
     updatePositions: function() {
@@ -114,7 +154,7 @@ module.exports = World = cls.Class.extend({
 
                 if (entity.position.x < entity.destination.x - offset.x) {
                     entity.velocity.x = Types.Velocity.X;
-                } else if (entity.position.x > entity.destination.x + offset.x) {
+                } else if (entity.position.x >= entity.destination.x + offset.x) {
                     entity.velocity.x = -Types.Velocity.X;
                 } else {
                     entity.velocity.x = 0;
@@ -123,7 +163,7 @@ module.exports = World = cls.Class.extend({
 
                 if (entity.position.y < entity.destination.y - offset.y) {
                     entity.velocity.y = Types.Velocity.Y;
-                } else if (entity.position.y > entity.destination.y + offset.y) {
+                } else if (entity.position.y >= entity.destination.y + offset.y) {
                     entity.velocity.y = -Types.Velocity.Y;
                 } else {
                     entity.velocity.y = 0;
@@ -166,7 +206,7 @@ module.exports = World = cls.Class.extend({
 
     addEntity: function(entity) {
         this.entities[entity.id] = entity;
-        this.server.sockets.emit(Types.Messages.SPAWN, this.getCleanEntity(entity));
+        this.broadcast(Types.Messages.SPAWN, this.getCleanEntity(entity));
     },
 
     removeEntity: function(entity) {
@@ -175,7 +215,7 @@ module.exports = World = cls.Class.extend({
         }
         entity.destroy();
 
-        this.server.sockets.emit(Types.Messages.DESPAWN, {id: entity.id});
+        this.broadcast(Types.Messages.DESPAWN, {id: entity.id});
     },
 
     addPlayer: function(player) {
@@ -184,7 +224,6 @@ module.exports = World = cls.Class.extend({
     },
 
     removePlayer: function(player) {
-        //player.broadcast(player.despawn());
         this.removeEntity(player);
         delete this.players[player.id];
     },
@@ -205,7 +244,7 @@ module.exports = World = cls.Class.extend({
         this.npcs[npc.id] = npc;
 
         //temporary message
-        this.server.sockets.emit(Types.Messages.MESSAGE, "Npc " + npc.name + " has joined the game.");
+        this.broadcast(Types.Messages.MESSAGE, "Npc " + npc.name + " has joined the game.");
 
         return npc;
     },
@@ -215,7 +254,7 @@ module.exports = World = cls.Class.extend({
         delete this.npcs[npc.id];
 
         //temporary message
-        this.server.sockets.emit(Types.Messages.MESSAGE, "Npc " + npc.name + " has left the game.");
+        this.broadcast(Types.Messages.MESSAGE, "Npc " + npc.name + " has left the game.");
     },
 
     removeNpcs: function() {
@@ -233,7 +272,10 @@ module.exports = World = cls.Class.extend({
     },
 
     broadcast: function(type, message) {
-        this.server.sockets.emit(type, message);
+        //this.server.sockets.emit(type, message);
+        _.each(this.players, function(player){
+            player.socket.emit(type, message);
+        });
     },
 
     getCleanEntity: function(entity) {
@@ -242,11 +284,13 @@ module.exports = World = cls.Class.extend({
 
     getState: function() {
         var self = this,
-            filtered_players = _.map(this.entities, function(entity){ return self.getCleanEntity(entity); });
+            filtered_entities = _.map(this.entities, function(entity){ return self.getCleanEntity(entity); });
+
         return {
-            server_time: new Date().toLocaleTimeString(),
-            entities_count: Object.keys(this.players).length,
-            entities: filtered_players,
+            world: self.id,
+            world_time: new Date().toLocaleTimeString(),
+            entities_count: Object.keys(filtered_entities).length,
+            entities: filtered_entities,
         }
     }
 });

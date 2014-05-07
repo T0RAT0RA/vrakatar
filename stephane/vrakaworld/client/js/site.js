@@ -3,7 +3,7 @@ var socket = io.connect('http://localhost:1338'),
     player = {};
 
 socket.emit(Types.Messages.INIT, {
-    username: username,
+    name: username,
     page: location.href.split(location.origin)[1]
 });
 
@@ -57,4 +57,10 @@ socket.on(Types.Messages.SPAWN, function (data) {
         left: data.position.x+"px",
         top: data.position.y+"px"
     });
+});
+
+$(document).on("click", ".item", function() {
+    var $this = $(this);
+    socket.emit(Types.Messages.ACTION, {id: Types.Actions.GET_ITEM, item: $this.data("id")});
+    //$(this).hide("explode");
 });

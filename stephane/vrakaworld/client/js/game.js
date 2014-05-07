@@ -1,14 +1,17 @@
-define(["player", "npc"], function (Player, Npc) {
+define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
 
     var Game = Class.extend({
-        init: function(app, socket, username) {
+        init: function(app, socket, username, worldId) {
             var self = this;
 
             this.app = app;
             this.socket = socket;
-            this.ups = 20;
+            this.mobileUps = 10;
 
-            this.map = null;
+            this.worldId    = worldId;
+            this.map        = null;
+            this.render     = new GameRenderer(this);
+            this.lastUpdate = 0;
 
             this.player     = {name: username};
             this.entities   = {};
@@ -20,11 +23,13 @@ define(["player", "npc"], function (Player, Npc) {
             socket.on(Types.Messages.DESPAWN, this.removeEntity.bind(this));
             socket.on(Types.Messages.CHAT, this.onChat.bind(this));
             socket.on(Types.Messages.INIT, this.initPlayer.bind(this));
+            socket.on(Types.Messages.MAP, this.render.initMap.bind(this.render));
             socket.on(Types.Messages.MESSAGE, this.app.logMessages.bind(this.app));
             socket.on("disconnect", this.app.game_disconnect_callback.bind(this.app));
 
             //Init player data
-            socket.emit(Types.Messages.INIT, {name: self.player.name});
+            socket.emit(Types.Messages.ENTERWORLD, {world: this.worldId});
+            socket.emit(Types.Messages.INIT, {name: this.player.name});
 
             console.log("Game - init");
 
@@ -41,12 +46,13 @@ define(["player", "npc"], function (Player, Npc) {
             this.player = player;
         },
 
-        run: function(mapFilePath) {
-
-        },
-
         updateGameState: function(data) {
-            //this.app.printGameState(data);
+            //Temporariy solution to reduce processing on mobiles
+            if (this.app.isMobile() && Date.now() - this.lastUpdate <= 1000/this.mobileUps) {
+                return;
+            }
+
+            this.app.printGameState(data);
 
             //update entities
             for (i in data.entities) {
@@ -55,6 +61,8 @@ define(["player", "npc"], function (Player, Npc) {
                     this.entities[entity.id].update(entity);
                 }
             }
+
+            this.lastUpdate = Date.now();
         },
 
         onChat: function (data) {
@@ -120,7 +128,7 @@ define(["player", "npc"], function (Player, Npc) {
             $(".game").on("click", ".player", function(e) {
                 $(this).find(".actions").toggle();
             });
-
+            /*
             $(".game").on("click", ".map", function(e) {
                 var offset = $(this).offset();
                 self.socket.emit(Types.Messages.MOVE, {
@@ -128,6 +136,7 @@ define(["player", "npc"], function (Player, Npc) {
                     y: e.pageY - offset.top,
                 });
             });
+            */
         }
     });
 

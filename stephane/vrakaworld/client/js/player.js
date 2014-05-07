@@ -5,6 +5,8 @@ define(['entity'], function(Entity) {
             this.hair = config.hair;
             this._super(id, "player", Types.Entities.PLAYER, config);
             this.isCurrentPlayer = false;
+            this.animation = 0;
+            this.lastCheck = Date.now();
         },
 
         setCurrentPlayer: function(){

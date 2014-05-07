@@ -8,7 +8,9 @@ Types = {
         CHAT: 5,
         SPAWN: 6,
         DESPAWN: 7,
-        ACTION: 8
+        ACTION: 8,
+        MAP: 9,
+        ENTERWORLD: 10
     },
 
     Entities: {
@@ -37,22 +39,31 @@ Types = {
             id: 1,
             label: "Changer de cheveux"
         },
-        SAY_HI: {
+        GET_ITEM: {
             id: 2,
+            label: "Prendre l'objet"
+        },
+        IDEA: {
+            id: 3,
+            label: "J'ai une idée",
+            duration: 2000
+        },
+        SAY_HI: {
+            id: 4,
             label: "Dire salut"
         },
         PARTY: {
-            id: 3,
+            id: 5,
             label: "-"
         },
         ADD_NPC: {
-            id: 4,
+            id: 6,
             label: "Add NPC"
         },
         REMOVE_NPCS: {
-            id: 5,
+            id: 7,
             label: "Remove NPCs"
-        },
+        }
     },
 
     Velocity: {

@@ -11,8 +11,9 @@ module.exports = Player = Class.extend({
         this._super(this.socket.id, "player", "player", config);
 
         this.hair = Types.Clothes.HAIR.BLOND;
+        this.action = {};
         this.hasEnteredGame = false;
-        this.actionsAvailable = [Types.Actions.CHANGE_HAIR];
+        this.actionsAvailable = [Types.Actions.CHANGE_HAIR, Types.Actions.IDEA];
 
         this.socket.on("disconnect", function() {
             if(self.exit_callback) {
@@ -25,8 +26,6 @@ module.exports = Player = Class.extend({
 
             if (Types.Messages.INIT == action) {
                 self.name = data.name;
-
-                self.send(Types.Messages.INIT, {id: self.id})
 
                 if (self.isAdmin()) {
                     self.actionsAvailable.push(Types.Actions.ADD_NPC);
@@ -52,6 +51,7 @@ module.exports = Player = Class.extend({
                     if (data.id == Types.Actions.CHANGE_HAIR.id) { self.toggleHair(); }
                     if (data.id == Types.Actions.ADD_NPC.id) { self.world.addNpc(); }
                     if (data.id == Types.Actions.REMOVE_NPCS.id) { self.world.removeNpcs(); }
+                    if (data.id == Types.Actions.IDEA.id) { self.setAction({id: Types.Actions.IDEA.id, duration: Types.Actions.IDEA.duration}) }
                 }
             }
             else if (Types.Messages.ADD_NPC == action) {
@@ -64,7 +64,11 @@ module.exports = Player = Class.extend({
     },
 
     isAdmin: function(new_hair) {
-        return this.name.match(/admin$/);
+        return (this.name && this.name.match(/admin$/));
+    },
+
+    setAction: function(action) {
+        this.action = action;
     },
 
     setHair: function(new_hair) {

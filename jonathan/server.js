@@ -53,5 +53,4 @@ function generateImage(request){
         if (err) console.log(err);
     });
 }
-
 start();

@@ -1,44 +1,62 @@
-<!DOCTYPE html>
-<html lang="fr">
+<!doctype html>
+<html>
 <head>
-<meta charset="utf-8" />
-<title>customize your own Vakatar - Porject.</title>
-<link href="css/style.css" rel="stylesheet" type="text/css">
-</head>
-
-<body>
- 	<!--Header!-->
-    <header id="header">
-		<h1>Header</h1>
- 	</header>
-    
-<!--Right side bar-->
-<nav id="rightbar" class="sidebar">
-    	<div id="menu">
-  			<ul id="onglets">
-   				<li class="active"><a href="#"> faces </a></li>
-    			<li><a href="#"> clothes </a></li>
-   				<li><a href="#"> accessories </a></li>
-    			<li><a href="#"><img src="img/lock_lock_01.png"></a></li>
-  			</ul>
-		</div>
-</nav>
-
- <!--mqin panel!-->
-<section id="mainpanel" class="solution1">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<title>vrakatar-project.</title>
+	<link href="css/style.css" rel="stylesheet" type="text/css">
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+	<script>
+	function allowDrop(ev)
+	{
+	ev.preventDefault();
+	}
 	
- 
-	<section id="mainpanelbody">
-		<h1>Mon vakatar</h1>
-			<div class="vakatar_photo">
-				<img src="img/avatar-body.jpg" alt="vakatar">
-            </div>
-	</section>
- 
-  <footer>
-	<h1>footer</h1>
-   </footer>
-</section>
- 
+	function drag(ev)
+	{
+	ev.dataTransfer.setData("Text",ev.target.id);
+	}
+	
+	function drop(ev)
+	{
+	ev.preventDefault();
+	var data=ev.dataTransfer.getData("Text");
+	var div = document.getElementById(data).cloneNode();
+	ev.target.appendChild(div);
+	}
+	</script>
+	<!-- IE6-8 support of HTML5 elements --> <!--[if lt IE 9]>
+	<script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+	<![endif]-->
+</head>
+<body>
+
+	<div id="header">
+		<p id="layoutdims"><img src="img/vrakatar.png" width="405" height="76"></p>
+	</div>
+<div class="colmask doublepage">
+	<div class="colleft">
+		<div class="col1">
+			<!-- Column 1 start -->
+			<h2>Personnalisation de mon vrakatar</h2>
+			<div id="avatar" ondrop="drop(event)" ondragover="allowDrop(event)">
+				<div id="body"></div>
+				<div id="hair1"></div>
+			</div>			
+			<!-- Column 1 end -->
+		</div>
+		<div class="col2">
+				<!-- Column 2 start -->
+			<h2>Banque d'éléments pour la personnalisation</h2>
+				<p>Plusieurs catégories - 2 niveaux accesoires blockés.</p>
+				<br>
+						<div id="hair1"	draggable="true" ondragstart="drag(event)"></div>
+						<div id="hair2" draggable="true" ondragstart="drag(event)"></div>
+				<!-- Column 2 end -->
+		</div>
+	</div>
+</div>
+<div id="footer">
+	<p>Footer de la page de customization.</p>
+</div>
 </body>
 </html>

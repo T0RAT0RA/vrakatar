@@ -1,80 +1,142 @@
-@charset "UTF-8";
-/* CSS Document
-Vrakatar project.
-
-Présentation le 28.05.2014 */
-
+/* CSS Document */
 body {
-	border: 1px solid black;
-   	width: 800px;
-   	height: 761px;
+	margin:0;
+	padding:0;
+	border:0;			/* This removes the border around the viewport in old versions of IE */
+	width:100%;
+	background:#f2da16;
+	min-width:500px;    	/* Minimum width of layout - remove line if not required */
+					/* The min-width property does not work in old versions of Internet Explorer */
+	font-size:90%;
 }
- 
-header {
-	border: 1px solid black;	
-	width : 800px;
-    height :140px;
+a {
+	color:#369;
 }
- 
-nav {
-	border: 1px solid black;
+a:hover {
+	color:#fff;
+	background:#369;
+	text-decoration:none;
+}
+h1, h2, h3 {
+	margin:.8em 0 .2em 0;
+	padding:0;
+}
+p {
+	margin:.4em 0 .8em 0;
+	padding:0;
+}
+img {
+	margin:10px 0 5px;
+}
+/* Header styles */
+#header {
+	clear:both;
+	float:left;
+	width:100%;	
+}
+#header {
+	border-bottom:1px solid #000;
+}
+#header p,
+#header h1,
+#header h2 {
+	padding:.4em 15px 0 15px;
+	margin:0;
+	background-color: Black;
+}
+/* 'widths' sub menu */
+#layoutdims {
+	clear:both;
+	border-top:4px solid #000;
+	margin:0;
+	background-image: url(img/vrakatar.png);
+	background-color: #f2da16;
+	padding:6px 15px !important;
+	text-align:center;
+}
+.conteneur {
+	width: 400px;
+	height: 110px;
+	-webkit-border-radius: 25px;
+	-moz-border-radius: 25px;
+	border-radius: 25px;
+	background-color: #fff4cf;
+	margin-bottom: 20px;
+}
+#avatar{
+	position:relative;
+	height:260px;
+}
+#avatar div {
+	position:absolute;
+	top:0;
+}	
+#body {
+	width: 135px;
+	height: 160px;
+	background:url("../img/body.png") no-repeat -202px -35px;
+}
+#hair1 {
+	width: 124px;
+	height: 100px;
+	background:url("../img/hair1.png");
+}
+#hair2 {
+	width: 124px;
+	height: 100px;
+	background:url("../img/hair2.png");
+}
+#elements {
+	text-align:left top;
+}
+/* column container */
+.colmask {
+	clear:both;
+	float:left;
+	width:100%;			/* width of whole page */
+	overflow:hidden;	/* This chops off any overhanging divs */
+}
+/* common column settings */
+.colright,
+.colmid,
+.colleft {
+	float:left;
+	width:100%;
+	position:relative;
+}
+.col1,
+.col2,
+.col3 {
+	float:left;
+	position:relative;
+	padding:0 0 1em 0;
+	overflow:hidden;
+}
+/* 2 Column (double page) settings */
+.doublepage {
+	background:#f2da16;		/* right column background colour */
+}
+.doublepage .colleft {
+	right:50%;			/* right column width */
+	background: #f2da16;		/* left column background colour */
+}
+.doublepage .col1 {
+	width:46%;			/* left column content width (column width minus left and right padding) */
+	left:52%;			/* right column width plus left column left padding */
+}
+.doublepage .col2 {
+	width:46%;			/* right column content width (column width minus left and right padding) */
+	left:56%;			/* (right column width) plus (left column left and right padding) plus (right column left padding) */
+}
+/* Footer styles */
+#footer {
+	clear:both;
+	float:left;
+	width:100%;
+	border-top: 6px solid #d0cec5;
+}
+#footer p {
+	padding:10px;
+	margin:0;
 }
 
-div.vakatar_photo {
-	padding-top: 40px;
-	text-align: center;
-             }
-
-#onglets
-{
-    font : bold 11px Batang, arial, serif;
-    list-style-type : none;
-    padding-bottom : 24px; /* à modifier suivant la taille de la police ET de la hauteur de l'onglet dans #onglets li */
-    border-bottom : 1px solid #9EA0A1;
-    margin-left : 0;
-}
-
-#onglets li
-{
-    float : left;
-    height : 21px; /* à modifier suivant la taille de la police pour centrer le texte dans l'onglet */
-    margin : 2px 2px 0 2px !important;  /* Pour les navigateurs autre que IE */
-    margin : 1px 2px 0 2px;  /* Pour IE  */
-    border : 1px solid #9EA0A1;
-}
-
-#onglets li.active
-{
-    border-bottom: 1px solid #fff;
-    background-color: #fff;
-}
-
-#onglets a
-{
-    display : block;
-    color : #666;
-    text-decoration : none;
-    padding : 4px;
-}
-
-#onglets a:hover
-{
-    background : #FF9;
-}
- 
-#rightbar {
-	border: 1px solid black;
-	float:right;
-	width: 385px;
-	height : 618px;
-}
-h1 {
-	text-align: center;
-}
-
-footer {
-	border: 1px solid black;
-	margin-top: 136px;
-	width : 800px;
-    height :140px;
-}

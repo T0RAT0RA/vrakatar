@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Vrakatar World</title>
+        <link rel="stylesheet/less" type="text/css" href="css/style.less" />
+    </head>
+    <body>
+
+        <div class="game not-connected" style="display: none;">
+            <form class="register">
+                Name: <input type="text" class="name" autofocus/><br/>
+                World: <select class="world">
+                         <option value="main">main</option>
+                         <option value="restaurant">restaurant</option>
+                       </select><br/>
+                <button style="display: none;">Enter</button>
+                <img class="loader" src="img/loader.gif">
+            </form>
+            <input type="text" maxlength="255" class="chat"/>
+        </div>
+
+        <div class="game-state" style="display: none;">
+            <div class="messages"></div>
+            <pre class="status"></pre>
+        </div>
+
+        <script src="../shared/js/gametypes.js"></script>
+        <script src="js/lib/class.js"></script>
+        <script data-main="js/start" src="js/lib/require.js"></script>
+    </body>
+</html>

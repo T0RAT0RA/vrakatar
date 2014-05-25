@@ -1,6 +1,5 @@
 .game {
     position: relative;
-    width: 65%;
     float: left;
     margin: 0 10px;
     display: block !important;
@@ -122,6 +121,16 @@
                 &[data-type=red] { background-position: unit(-@player_width*6, px) unit(-@player_height*3, px); }
                 &[data-type=ponytail-red] { background-position: unit(-@player_width*9, px) unit(-@player_height*3, px); }
             }
+        }
+
+        .idea {
+            background-image: url("../img/idea.png");
+            width: 32px;
+            height: 32px;
+            background-size: 32px;
+            position: absolute;
+            top: -23px;
+            z-index: 10;
         }
     }
 

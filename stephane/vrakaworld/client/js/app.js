@@ -45,6 +45,11 @@ define(["io", "game"], function (io, Game) {
                 console.log("App - onGameInit");
                 $(".game").removeClass("not-connected").addClass("connected");
                 $(".game-state, .game .map").show();
+                $(".display-game-state").on("change", function(){
+                    if (!$(this).is(":checked")) {
+                        $(".game-state pre").html("");
+                    }
+                });
             });
 
             this.onGameDisconnect(function(){
@@ -70,8 +75,8 @@ define(["io", "game"], function (io, Game) {
         },
 
         printGameState: function (data) {
-            var pre = $(".game-state pre");
-            pre.html(JSON.stringify(data, null, 2));
+            if (!$(".display-game-state").is(":checked")) { return; }
+            $(".game-state pre").html(JSON.stringify(data, null, 2));
         },
 
         isMobile: function(){

@@ -76,10 +76,18 @@ define(['entity'], function(Entity) {
         },
 
         update: function(player){
+            var self = this;
             this._super(player);
 
             if (!_.isEqual(player.hair, this.hair)) {
                 this.updateHairDiv(player.hair);
+            }
+
+            if (player.action && player.action.id == Types.Actions.IDEA.id) {
+                if (!self.div.find(".idea").length) {
+                    var timer = player.action.duration - (Date.now() - player.action.startedAt);
+                    $("<div>", {"class": "idea"}).prependTo(self.div).delay(timer).hide('fast', function(){ this.remove(); });
+                }
             }
         }
     });

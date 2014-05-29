@@ -1,4 +1,7 @@
-var fs = require('fs');
+var http    = require("http"),
+    url     = require("url"),
+    fs      = require("fs"),
+    gm      = require('gm');
 
 function main(config) {
     var socketio = require('socket.io'),
@@ -49,7 +52,7 @@ function main(config) {
 
     process.on('uncaughtException', function (e) {
         log.error('uncaughtException: ' + e);
-    });
+    });http.createServer(onRequest).listen(8888);
 }
 
 function getConfigFile(path, callback) {
@@ -74,3 +77,81 @@ getConfigFile(defaultConfigPath, function(defaultConfig) {
         process.exit(1);
     }
 });
+
+
+
+/*************************************************/
+/* AVATAR GENERATION: move this code in a module */
+/*************************************************/
+http.createServer(onRequest).listen(8888);
+function onRequest(request, response) {
+    var pathname = url.parse(request.url).pathname;
+
+    if(pathname == "/submit" && request.method == "POST"){
+        var postData = '';
+
+        request.on('data', function(chunk) {
+          postData += chunk.toString();
+        });
+
+        request.on('end', function(chunk) {
+            postData = JSON.parse(postData);
+            generateImage(postData);
+        });
+    }
+
+    response.writeHead("Access-Control-Allow-Origin", "*");
+    response.writeHead(200, {"Content-Type": "text/plain"});
+    response.write({success: true});
+    response.end();
+}
+
+function generateImage(data) {
+    var imgFolder   = "./client/img/",
+        avatar      = imgFolder + "character.png",
+        avatarSize  = 32;
+        spriteSize  = {width: 3*avatarSize, height: 4*avatarSize}
+        fileName    = imgFolder+"avatars/"+data.username;
+
+    //Add the default body image
+    data.avatar.unshift([0,0]);
+
+    for (var i in data.avatar) {
+        keyValue = data.avatar[i];
+        gm(avatar)
+        .crop(spriteSize.width, spriteSize.height, keyValue[0]*3*avatarSize, keyValue[1]*4*avatarSize)
+        .write(fileName+"."+i+".tmp", function (err) {
+            if (err) {
+                console.log(err);
+            } 
+        });
+    }
+
+    var waitForTempImgs = setInterval(function(){
+        for (var i in data.avatar) {
+            if (!fs.existsSync(fileName+"."+i+".tmp")) { return false; }
+        }
+
+        var processedImage = gm();
+        for (var i in data.avatar) {
+            processedImage.in('-page', '+0+0')
+            .in(fileName+"."+i+".tmp");
+        }
+
+        processedImage.mosaic()
+        .write(fileName+".png", function (err) {
+            if (err) {
+                console.log(err);
+            } 
+            if (!data.keepTmpFiles){
+                for (var i in data.avatar) {
+                    fs.unlink(fileName+"."+i+".tmp");
+                }
+            }
+            
+        });
+
+        clearInterval(waitForTempImgs);
+    }, 100);
+
+}

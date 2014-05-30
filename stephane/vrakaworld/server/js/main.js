@@ -140,7 +140,7 @@ function generateImage(data) {
             if (!fs.existsSync(fileName+"."+i+".tmp")) { return false; }
         }
 
-        var processedImage = gm();
+        var processedImage = gm().background("transparent");
         for (var i in data.avatar) {
             processedImage.in('-page', '+0+0')
             .in(fileName+"."+i+".tmp");

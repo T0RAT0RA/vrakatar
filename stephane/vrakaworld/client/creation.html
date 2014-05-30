@@ -5,28 +5,58 @@
     </head>
     <body>
 
-        <input class="username" type="text" /><br/>
-        <button class="generate">Generate avatar</button>
+        <form class="generate">
+            <input class="username" type="text" maxlength=15 /><br/>
+            <span class="position" style="margin: 2px;">
+                <input class="position-x" type="text" maxlength=1 style="width: 30px;" />
+                <input class="position-y" type="text" maxlength=1 style="width: 30px;" />
+            </span>
+            <button type="button" class="add-position">+</button><br/>
+            <button>Generate avatar</button>
+            <img class="loader" src="img/loader.gif" style="display: none;">
+        </form>
 
         <script src="js/lib/require.js"></script>
         <script>
             define("jquery", ["http://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"]);
             require(["jquery"], function(){
-                $(".generate").on("click", function(){
+                $(".generate").on("click", ".position input", function() {
+                    $(this).select();
+                })
+
+                $(".add-position").on("click", function() {
+                    var last_position = $(".position:last"),
+                        new_position = last_position.clone();
+                    new_position.find("input").val("");
+                    new_position.insertAfter(last_position);
+                    $("<br/>").insertBefore(new_position);
+                    $(".position-x:last").focus();
+                });
+
+                $(".generate").on("submit", function(){
+                    var avatar_data = {};
+                    avatar_data.username = $(".username").val();
+                    avatar_data.avatar = [];
+                    $(".position").each(function() {
+                        var position = [
+                            parseInt($(this).find(".position-x").val()) || 0,
+                            parseInt($(this).find(".position-y").val()) || 0,
+                        ]
+                        avatar_data.avatar.push(position);
+                    });
+                    $(".loader").show();
                     $.ajax({
                         type: "POST",
-                        dataType: "jsonp",
                         url: "http://localhost:8888/submit",
-                        data: {
-                            "username": "test",
-                            "avatar": [[1,0], [2,1], [3,1]]
-                        },
+                        contentType: 'application/json; charset=utf-8',
+                        dataType: 'json',
+                        data: JSON.stringify(avatar_data),
                         success: function(data) {
-                            if (data) {
-                                alert(data);
-                            }
+                            if (data) { console.log(data); }
+                            $(".loader").hide();
                         }
                     });
+                    return false;
                 });
             });
         </script>

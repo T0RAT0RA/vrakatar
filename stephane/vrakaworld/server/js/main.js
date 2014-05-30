@@ -1,7 +1,7 @@
 var http    = require("http"),
     url     = require("url"),
     fs      = require("fs"),
-    gm      = require('gm');
+    gm      = require('gm').subClass({ imageMagick: true });
 
 function main(config) {
     var socketio = require('socket.io'),
@@ -49,10 +49,11 @@ function main(config) {
             worlds[world.id] = world;
         });
     });
-
+    /*
     process.on('uncaughtException', function (e) {
         log.error('uncaughtException: ' + e);
-    });http.createServer(onRequest).listen(8888);
+    });
+    */
 }
 
 function getConfigFile(path, callback) {
@@ -78,31 +79,40 @@ getConfigFile(defaultConfigPath, function(defaultConfig) {
     }
 });
 
-
-
 /*************************************************/
 /* AVATAR GENERATION: move this code in a module */
 /*************************************************/
 http.createServer(onRequest).listen(8888);
 function onRequest(request, response) {
-    var pathname = url.parse(request.url).pathname;
+    var pathname = url.parse(request.url).pathname,
+        headers = {},
+        json_response = {};
 
-    if(pathname == "/submit" && request.method == "POST"){
+
+    if (pathname == "/submit" && request.method == "POST") {
         var postData = '';
 
         request.on('data', function(chunk) {
-          postData += chunk.toString();
+            postData += chunk.toString();
         });
 
         request.on('end', function(chunk) {
             postData = JSON.parse(postData);
-            generateImage(postData);
+            if (postData.username) {
+                generateImage(postData);
+            }
         });
     }
 
-    response.writeHead("Access-Control-Allow-Origin", "*");
-    response.writeHead(200, {"Content-Type": "text/plain"});
-    response.write({success: true});
+    // IE8 does not allow domains to be specified, just the *
+    // headers["Access-Control-Allow-Origin"] = req.headers.origin;
+    headers["Access-Control-Allow-Origin"] = "*";
+    headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
+    headers["Access-Control-Allow-Credentials"] = false;
+    headers["Access-Control-Max-Age"] = '86400'; // 24 hours
+    headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept";
+    response.writeHead(200, headers);
+    response.write(JSON.stringify(json_response));
     response.end();
 }
 
@@ -121,9 +131,7 @@ function generateImage(data) {
         gm(avatar)
         .crop(spriteSize.width, spriteSize.height, keyValue[0]*3*avatarSize, keyValue[1]*4*avatarSize)
         .write(fileName+"."+i+".tmp", function (err) {
-            if (err) {
-                console.log(err);
-            } 
+            if (err) { console.log(err); }
         });
     }
 
@@ -140,15 +148,13 @@ function generateImage(data) {
 
         processedImage.mosaic()
         .write(fileName+".png", function (err) {
-            if (err) {
-                console.log(err);
-            } 
+            if (err) { console.log(err); }
             if (!data.keepTmpFiles){
                 for (var i in data.avatar) {
                     fs.unlink(fileName+"."+i+".tmp");
                 }
             }
-            
+
         });
 
         clearInterval(waitForTempImgs);

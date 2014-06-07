@@ -88,6 +88,14 @@ function onRequest(request, response) {
         headers = {},
         json_response = {};
 
+    // IE8 does not allow domains to be specified, just the *
+    // headers["Access-Control-Allow-Origin"] = req.headers.origin;
+    headers["Access-Control-Allow-Origin"] = "*";
+    headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
+    headers["Access-Control-Allow-Credentials"] = false;
+    headers["Access-Control-Max-Age"] = '86400'; // 24 hours
+    headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept";
+    response.writeHead(200, headers);
 
     if (pathname == "/submit" && request.method == "POST") {
         var postData = '';
@@ -99,24 +107,21 @@ function onRequest(request, response) {
         request.on('end', function(chunk) {
             postData = JSON.parse(postData);
             if (postData.username) {
-                generateImage(postData);
+                generateImage(postData, function (image){
+                    json_response.success = true;
+                    json_response.image = image;
+                    response.write(JSON.stringify(json_response));
+                    response.end();
+                });
             }
         });
+    } else {
+        response.write(JSON.stringify(json_response));
+        response.end();
     }
-
-    // IE8 does not allow domains to be specified, just the *
-    // headers["Access-Control-Allow-Origin"] = req.headers.origin;
-    headers["Access-Control-Allow-Origin"] = "*";
-    headers["Access-Control-Allow-Methods"] = "POST, GET, PUT, DELETE, OPTIONS";
-    headers["Access-Control-Allow-Credentials"] = false;
-    headers["Access-Control-Max-Age"] = '86400'; // 24 hours
-    headers["Access-Control-Allow-Headers"] = "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept";
-    response.writeHead(200, headers);
-    response.write(JSON.stringify(json_response));
-    response.end();
 }
 
-function generateImage(data) {
+function generateImage(data, callback) {
     var imgFolder   = "./client/img/",
         avatar      = imgFolder + "character.png",
         avatarSize  = 32;
@@ -154,7 +159,7 @@ function generateImage(data) {
                     fs.unlink(fileName+"."+i+".tmp");
                 }
             }
-
+            callback(data.username+".png");
         });
 
         clearInterval(waitForTempImgs);

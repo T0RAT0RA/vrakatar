@@ -17,7 +17,6 @@ define(['entity'], function(Entity) {
             console.log(this.kind);
             this.talkCount = NpcTalk[this.kind]? NpcTalk[this.kind].length : 0;
             this.talkIndex = 0;
-            this.hair = config.hair;
         },
 
         talk: function() {
@@ -38,14 +37,6 @@ define(['entity'], function(Entity) {
         createDiv: function(){
             this._super();
 
-            //Entity hair div
-            if (this.hair) {
-                $("<div>", {
-                    "class": "hair",
-                    "data-type": this.hair,
-                }).appendTo(this.div);
-            }
-
             //Entity name div
             $("<div>", {
                 "class": "name",
@@ -61,9 +52,8 @@ define(['entity'], function(Entity) {
             }).appendTo(this.div);
         },
 
-        update: function(player){
-            this._super(player);
-            this.div.find(".hair").attr("data-type", player.hair);
+        update: function(npc){
+            this._super(npc);
         }
     });
 

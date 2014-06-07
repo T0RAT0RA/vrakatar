@@ -1,6 +1,8 @@
 var cls = require("./lib/class"),
     _ = require("underscore"),
-    Types = require("../../shared/js/gametypes");
+    fs = require('fs'),
+    Types = require("../../shared/js/gametypes"),
+    avatarsFolder = "client/img/avatars/";
 
 module.exports = Player = Class.extend({
     init: function(config) {
@@ -10,10 +12,10 @@ module.exports = Player = Class.extend({
 
         this._super(this.socket.id, "player", "player", config);
 
-        this.hair = Types.Clothes.HAIR.BLOND;
+        this.sprite = "default.png";
         this.action = {};
         this.hasEnteredGame = false;
-        this.actionsAvailable = [Types.Actions.CHANGE_HAIR, Types.Actions.IDEA];
+        this.actionsAvailable = [Types.Actions.IDEA];
 
         this.socket.on("disconnect", function() {
             if(self.exit_callback) {
@@ -25,7 +27,12 @@ module.exports = Player = Class.extend({
                 data    = event.args[0];
 
             if (Types.Messages.INIT == action) {
+                console.log("Types.Messages.INIT")
                 self.name = data.name;
+
+                if (fs.existsSync(avatarsFolder + data.name + ".png")) {
+                    self.sprite = data.name + ".png";
+                }
 
                 if (self.isAdmin()) {
                     self.actionsAvailable.push(Types.Actions.ADD_NPC);
@@ -48,7 +55,6 @@ module.exports = Player = Class.extend({
             }
             else if (Types.Messages.ACTION == action) {
                 if (self.hasAction(data.id)) {
-                    if (data.id == Types.Actions.CHANGE_HAIR.id) { self.toggleHair(); }
                     if (data.id == Types.Actions.ADD_NPC.id) { self.world.addNpc(); }
                     if (data.id == Types.Actions.REMOVE_NPCS.id) { self.world.removeNpcs(); }
                     if (data.id == Types.Actions.IDEA.id) { self.setAction({id: Types.Actions.IDEA.id, duration: Types.Actions.IDEA.duration}) }
@@ -63,7 +69,7 @@ module.exports = Player = Class.extend({
         });
     },
 
-    isAdmin: function(new_hair) {
+    isAdmin: function() {
         return (this.name && this.name.match(/admin$/));
     },
 
@@ -71,20 +77,8 @@ module.exports = Player = Class.extend({
         this.action = action;
     },
 
-    setHair: function(new_hair) {
-        this.hair = new_hair;
-    },
-
-    toggleHair: function() {
-        var new_hair = Types.Clothes.HAIR.BLOND;
-
-        if (_.isEqual(this.hair, Types.Clothes.HAIR.BLOND)) {
-            new_hair = Types.Clothes.HAIR.RED;
-        } else if (_.isEqual(this.hair, Types.Clothes.HAIR.RED)){
-            new_hair = Types.Clothes.HAIR.WEIRD;
-        }
-
-        this.setHair(new_hair);
+    setSprite: function(new_sprite) {
+        this.sprite = new_sprite;
     },
 
     hasAction: function(id) {

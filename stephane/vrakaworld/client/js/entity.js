@@ -9,10 +9,13 @@ define(function() {
             this.kind = kind;
             this.name = config.name || "Lorem ipsum";
             this.direction = config.direction || "s";
-            this.color = config.color;
+            this.sprite = config.sprite;
             this.position = config.position;
             this.size = config.size;
             this.actionsAvailable = config.actionsAvailable;
+            this.increment = 1;
+            this.lastCheck = Date.now();
+            this.animation = 0;
 
             this.createDiv();
         },
@@ -24,6 +27,7 @@ define(function() {
             }).appendTo(".game");
 
             this.div.css({
+                "background-image": "url(img/avatars/"+this.sprite+")",
                 top: Math.round(this.position.y - this.div.height()/2),
                 left: Math.round(this.position.x - this.div.width()/2)
             });
@@ -52,16 +56,14 @@ define(function() {
             return (this.velocity && (this.velocity.x || this.velocity.y));
         },
 
-        animate: function(){
+        animate: function() {
             var time = Date.now();
 
-            if (time - this.lastCheck >= 1000/25) {
-                this.animation++;
-                if (this.animation >= 3) this.animation = 0;
+            if (time - this.lastCheck >= 1000/20) {
+                this.animation += this.increment;
+                if (this.animation <=0 || this.animation >= 2) this.increment *= -1;
 
                 this.div.css({"background-position-x": "-" + this.animation*32 + "px"});
-                //Animate the hair: this.div.find(".hair")
-                this.div.find(".hair[data-type=blond]").css({"background-position-x": "-" + (3*32 + this.animation*32) + "px"});
                 this.lastCheck = Date.now();
             }
         }

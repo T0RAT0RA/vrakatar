@@ -85,44 +85,17 @@
         width: unit(@player_width, px);
         height: unit(@player_height, px);
 
-        .hair {
-            position: absolute;
-            background: transparent url("../img/character.png") no-repeat;
-            width: unit(@player_width, px);
-            height: unit(@player_height, px);
-        }
-
         &[data-direction=s] {
             background-position: 0px 0px;
-            .hair {
-                &[data-type=blond] { background-position: unit(-@player_width*3, px) 0px; }
-                &[data-type=red] { background-position: unit(-@player_width*6, px) 0px; }
-                &[data-type=ponytail-red] { background-position: unit(-@player_width*9, px) 0px; }
-            }
         }
         &[data-direction=w] {
             background-position: 0px unit(-@player_height, px);
-            .hair {
-                &[data-type=blond] { background-position: unit(-@player_width*3, px) unit(-@player_height, px); }
-                &[data-type=red] { background-position: unit(-@player_width*6, px) unit(-@player_height, px); }
-                &[data-type=ponytail-red] { background-position: unit(-@player_width*9, px) unit(-@player_height, px); }
-            }
         }
         &[data-direction=e] {
             background-position: 0px unit(-@player_height*2, px);
-            .hair {
-                &[data-type=blond] { background-position: unit(-@player_width*3, px) unit(-@player_height*2, px); }
-                &[data-type=red] { background-position: unit(-@player_width*6, px) unit(-@player_height*2, px); }
-                &[data-type=ponytail-red] { background-position: unit(-@player_width*9, px) unit(-@player_height*2, px); }
-            }
         }
         &[data-direction=n] {
             background-position: 0px unit(-@player_height*3, px);
-            .hair {
-                &[data-type=blond] { background-position: unit(-@player_width*3, px) unit(-@player_height*3, px); }
-                &[data-type=red] { background-position: unit(-@player_width*6, px) unit(-@player_height*3, px); }
-                &[data-type=ponytail-red] { background-position: unit(-@player_width*9, px) unit(-@player_height*3, px); }
-            }
         }
 
         .idea {

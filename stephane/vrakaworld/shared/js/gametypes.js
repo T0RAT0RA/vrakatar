@@ -26,42 +26,30 @@ Types = {
         HAT: 6,
     },
 
-    Clothes: {
-        HAIR: {
-            BLOND: ["blond"],
-            RED: ["red", "ponytail-red"],
-            WEIRD: ["blond", "ponytail-red"],
-        }
-    },
-
     Actions: {
-        CHANGE_HAIR: {
-            id: 1,
-            label: "Changer de cheveux"
-        },
         GET_ITEM: {
-            id: 2,
+            id: 1,
             label: "Prendre l'objet"
         },
         IDEA: {
-            id: 3,
+            id: 2,
             label: "J'ai une idée",
             duration: 2000
         },
         SAY_HI: {
-            id: 4,
+            id: 3,
             label: "Dire salut"
         },
         PARTY: {
-            id: 5,
+            id: 4,
             label: "-"
         },
         ADD_NPC: {
-            id: 6,
+            id: 5,
             label: "Add NPC"
         },
         REMOVE_NPCS: {
-            id: 7,
+            id: 6,
             label: "Remove NPCs"
         }
     },

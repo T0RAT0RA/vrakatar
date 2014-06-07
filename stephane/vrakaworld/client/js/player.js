@@ -2,11 +2,8 @@ define(['entity'], function(Entity) {
 
     var Player = Entity.extend({
         init: function(id, config) {
-            this.hair = config.hair;
             this._super(id, "player", Types.Entities.PLAYER, config);
             this.isCurrentPlayer = false;
-            this.animation = 0;
-            this.lastCheck = Date.now();
         },
 
         setCurrentPlayer: function(){
@@ -45,11 +42,6 @@ define(['entity'], function(Entity) {
         createDiv: function(){
             this._super();
 
-            //Entity hair div
-            if (this.hair) {
-                this.updateHairDiv(this.hair);
-            }
-
             //Entity name div
             $("<div>", {
                 "class": "name",
@@ -65,23 +57,9 @@ define(['entity'], function(Entity) {
             }).appendTo(this.div);
         },
 
-        updateHairDiv: function(hair){
-            var self = this;
-            this.hair = hair;
-
-            this.div.find(".hair").remove();
-            _.each(this.hair, function(type) {
-                $("<div>", {"class": "hair", "data-type": type}).prependTo(self.div);
-            });
-        },
-
         update: function(player){
             var self = this;
             this._super(player);
-
-            if (!_.isEqual(player.hair, this.hair)) {
-                this.updateHairDiv(player.hair);
-            }
 
             if (player.action && player.action.id == Types.Actions.IDEA.id) {
                 if (!self.div.find(".idea").length) {

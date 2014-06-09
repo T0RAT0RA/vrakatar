@@ -6,7 +6,7 @@ var http    = require("http"),
 function main(config) {
     var socketio = require('socket.io'),
         socketioWildcard = require('socket.io-wildcard'),
-        port = Number(process.env.PORT || 5000);
+        port = Number(process.env.PORT || 1337);
         server = socketioWildcard(socketio).listen(port, {log: false}),
         WorldServer = require("./worldserver"),
         Types = require("../../shared/js/gametypes");

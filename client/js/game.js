@@ -15,6 +15,7 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
 
             this.player     = {name: username};
             this.entities   = {};
+            this.audio      = {};
 
             this.bindActions();
 
@@ -22,6 +23,7 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
             socket.on(Types.Messages.SPAWN, this.addEntity.bind(this));
             socket.on(Types.Messages.DESPAWN, this.removeEntity.bind(this));
             socket.on(Types.Messages.CHAT, this.onChat.bind(this));
+            socket.on(Types.Messages.ACTION, this.onAction.bind(this));
             socket.on(Types.Messages.INIT, this.initPlayer.bind(this));
             socket.on(Types.Messages.MAP, this.render.initMap.bind(this.render));
             socket.on(Types.Messages.MESSAGE, this.app.logMessages.bind(this.app));
@@ -79,6 +81,16 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
                     width: (data.message.length * 10)+"px"
                 });
             entity_div_say.show('fast').delay(5000).hide('fast');
+        },
+
+        onAction: function (data) {
+            console.log("onAction", data)
+            if (data.id == Types.Actions.CALL_JACK_BAUER.id) {
+                if (!this.audio.ctu) {
+                    this.audio.ctu = new Audio("audio/ctu24.mp3");
+                }
+                this.audio.ctu.play();
+            }
         },
 
         addEntity: function(entity) {

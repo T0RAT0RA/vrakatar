@@ -40,9 +40,9 @@ Types = {
             id: 3,
             label: "Dire salut"
         },
-        PARTY: {
+        CALL_JACK_BAUER: {
             id: 4,
-            label: "-"
+            label: "Appeller Jack Bauer"
         },
         ADD_NPC: {
             id: 5,

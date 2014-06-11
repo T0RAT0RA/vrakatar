@@ -5,8 +5,8 @@ How to use
 ==========
 Requirements:
 
-* Node
-* [virtualenv](http://www.virtualenv.org/)
+* [Node.js](http://nodejs.org/)
+* [imagemagick](http://www.imagemagick.org/)
 
 ---
 

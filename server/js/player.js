@@ -57,9 +57,7 @@ module.exports = Player = Class.extend({
                 if (self.hasAction(data.id)) {
                     if (data.id == Types.Actions.ADD_NPC.id) { self.world.addNpc(); }
                     if (data.id == Types.Actions.REMOVE_NPCS.id) { self.world.removeNpcs(); }
-                    if (data.id == Types.Actions.CALL_JACK_BAUER.id) {
-                        self.world.broadcast(Types.Messages.ACTION, {id: Types.Actions.CALL_JACK_BAUER.id});
-                    }
+                    if (data.id == Types.Actions.CALL_JACK_BAUER.id) { self.world.callBauer(self); }
                     if (data.id == Types.Actions.IDEA.id) { self.setAction({id: Types.Actions.IDEA.id, duration: Types.Actions.IDEA.duration}) }
                 }
             }

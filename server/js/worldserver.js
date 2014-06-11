@@ -228,8 +228,9 @@ module.exports = World = cls.Class.extend({
         delete this.players[player.id];
     },
 
-    addNpc: function() {
-        var npc = new Npc(Date.now(), {
+    addNpc: function(id, name) {
+        var npc = new Npc(id || Date.now(), {
+                name: name,
                 position: {
                     x: _.random(50, 600),
                     y: _.random(50, 400),
@@ -263,6 +264,23 @@ module.exports = World = cls.Class.extend({
         _.each(this.npcs, function(npc){
             self.removeNpc(npc);
         });
+    },
+
+    callBauer: function(player) {
+        var self = this;
+        self.broadcast(Types.Messages.ACTION, {id: Types.Actions.CALL_JACK_BAUER.id});
+        self.broadcast(Types.Messages.MESSAGE, player.name + " a appellé Jack Bauer.");
+
+        //Check if Jack is already there or being called
+        if (self.callingJack || this.npcs["bauer"]) { return; }
+
+        self.callingJack = setTimeout(function(){
+            var jack_bauer = self.addNpc("bauer", "Jack Bauer");
+            setTimeout(function(){
+                self.removeNpc(jack_bauer);
+                delete self.callingJack;
+            }, 10000);
+        }, 5000);
     },
 
     getEntitiesByType: function() {

@@ -267,7 +267,15 @@ module.exports = World = cls.Class.extend({
     },
 
     callBauer: function(player) {
-        var self = this;
+        var self = this,
+            facts = [
+                "Ordinary people have panic attacks. Chuck Norris has Jack Bauer's attacks!",
+                "Jack Bauer once shot himself ten times, just to prove that 50 cent is a b*tch",
+                "Jack Bauer sleeps with a night light because the dark is afraid of Jack Bauer.",
+                "Jack Bauer is the only reason why Waldo is hiding.",
+                "Jack Bauer doesn't need a translator, torture sounds the same in every language.",
+                "Jack Bauer could get off the Lost island in 24 hours.",
+            ];
         self.broadcast(Types.Messages.ACTION, {id: Types.Actions.CALL_JACK_BAUER.id});
         self.broadcast(Types.Messages.MESSAGE, player.name + " a appellé Jack Bauer.");
 
@@ -277,10 +285,13 @@ module.exports = World = cls.Class.extend({
         self.callingJack = setTimeout(function(){
             var jack_bauer = self.addNpc("bauer", "Jack Bauer");
             setTimeout(function(){
+                self.broadcast(Types.Messages.CHAT, {id: jack_bauer.id, name: jack_bauer.name, message: _.sample(facts)});
+            }, 3000);
+            setTimeout(function(){
                 self.removeNpc(jack_bauer);
                 delete self.callingJack;
             }, 10000);
-        }, 5000);
+        }, 2000);
     },
 
     getEntitiesByType: function() {

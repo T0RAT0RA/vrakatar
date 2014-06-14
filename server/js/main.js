@@ -26,18 +26,29 @@ function main(config) {
     log.info("Starting Vrakatar world game server...");
 
     server.sockets.on("connection", function(socket) {
+        //Send WORLDS info to the user
+        socket.emit(Types.Messages.WORLDSINFO, {worlds: getWorldsInfo()});
+
         socket.on(Types.Messages.ENTERWORLD, function(data) {
-            if (worlds["world_" + data.world]) {
-                world = worlds["world_" + data.world]
+            if (worlds[data.world]) {
+                world = worlds[data.world]
             } else {
-                console.log("Wordl world_" + data.world + "doesn't exist.")
+                console.log("Wordl " + data.world + "doesn't exist.");
                 world = worlds["world_main"];
             }
+
+            //Check if server is full
+            if (_.keys(world.players).length >= world.maxPlayers) {
+                console.log("World " + data.world + " is full.");
+                socket.emit(Types.Messages.ENTERWORLD, {success: false, isFull: true});
+                return;
+            };
 
             new Player({
                 socket: socket,
                 world: world
             });
+            socket.emit(Types.Messages.ENTERWORLD, {success: true});
         });
     });
 
@@ -55,6 +66,18 @@ function main(config) {
         log.error('uncaughtException: ' + e);
     });
     */
+
+    function getWorldsInfo() {
+        worldsInfo = {};
+        for (id in worlds) {
+            worldsInfo[id] = {
+                id: id,
+                players: _.keys(worlds[id].players).length,
+                maxPlayers: worlds[id].maxPlayers
+            };
+        }
+        return worldsInfo;
+    }
 }
 
 function getConfigFile(path, callback) {

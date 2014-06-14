@@ -16,6 +16,8 @@ define(["io", "game"], function (io, Game) {
 
             $(".game .register button").show();
             $(".game .register .loader").remove();
+
+            socket.on(Types.Messages.WORLDSINFO, this.updateWoldsInfo.bind(this));
         },
 
         initLogin: function() {
@@ -41,6 +43,10 @@ define(["io", "game"], function (io, Game) {
 
         connect: function(username, worldId) {
             console.log("App - connect");
+            this.onWorldFull(function(){
+                console.log("App - onWorldFull");
+                delete this;
+            });
             this.onGameInit(function(){
                 console.log("App - onGameInit");
                 $(".game").removeClass("not-connected").addClass("connected");
@@ -62,6 +68,10 @@ define(["io", "game"], function (io, Game) {
             game = new Game(this, socket, username, worldId);
         },
 
+        onWorldFull: function(callback) {
+            this.world_full_callback = callback;
+        },
+
         onGameInit: function(callback) {
             this.game_init_callback = callback;
         },
@@ -77,6 +87,16 @@ define(["io", "game"], function (io, Game) {
         printGameState: function (data) {
             if (!$(".display-game-state").is(":checked")) { return; }
             $(".game-state pre").html(JSON.stringify(data, null, 2));
+        },
+
+        updateWoldsInfo: function (data) {
+            console.log(data);
+            for (id in data.worlds) {
+                $(".register .world").append($("<option>",{
+                    value: id,
+                    text: id + " (" + data.worlds[id].players + "/" + data.worlds[id].maxPlayers + ")"
+                }));
+            }
         },
 
         isMobile: function(){

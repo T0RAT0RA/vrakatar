@@ -31,13 +31,19 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
 
             //Init player data
             socket.emit(Types.Messages.ENTERWORLD, {world: this.worldId});
-            socket.emit(Types.Messages.INIT, {name: this.player.name});
 
             console.log("Game - init");
 
-            if (this.app.game_init_callback) {
-                this.app.game_init_callback();
-            }
+            socket.on(Types.Messages.ENTERWORLD, function(data){
+                console.log("Types.Messages.ENTERWORLD", data);
+                if (data.isFull) {
+                    self.app.world_full_callback();
+                }
+                if (data.success && self.app.game_init_callback) {
+                    socket.emit(Types.Messages.INIT, {name: self.player.name});
+                    self.app.game_init_callback();
+                }
+            });
         },
 
         onInit: function(callback) {

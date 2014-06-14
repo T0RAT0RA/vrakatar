@@ -38,7 +38,7 @@ module.exports = World = cls.Class.extend({
             };
 
             //Init player object on client side
-            player.send(Types.Messages.INIT, self.getCleanEntity(player))
+            player.send(Types.Messages.INIT, self.getCleanEntity(player));
 
             player.onExit(function() {
                 log.info(player.name + " has left the game.");

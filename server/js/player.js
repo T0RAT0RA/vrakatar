@@ -27,7 +27,6 @@ module.exports = Player = Class.extend({
                 data    = event.args[0];
 
             if (Types.Messages.INIT == action) {
-                console.log("Types.Messages.INIT")
                 self.name = data.name;
 
                 if (fs.existsSync(avatarsFolder + self.formatUsername(data.name) + ".png")) {

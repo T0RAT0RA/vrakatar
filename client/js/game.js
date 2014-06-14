@@ -78,7 +78,7 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
             entity_div_say.stop(true);
             entity_div_say.html(data.message)
                 .css({
-                    width: (data.message.length * 10)+"px"
+                    width: (data.message.length * 5)+"px"
                 });
             entity_div_say.show('fast').delay(5000).hide('fast');
         },
@@ -137,7 +137,7 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
                 self.socket.emit(Types.Messages.ACTION, {id: $(this).data("id")});
             });
 
-            $(".game").on("click", ".player", function(e) {
+            $(".game").on("click", ".entity", function(e) {
                 $(this).find(".actions").toggle();
             });
             /*

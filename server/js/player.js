@@ -30,8 +30,8 @@ module.exports = Player = Class.extend({
                 console.log("Types.Messages.INIT")
                 self.name = data.name;
 
-                if (fs.existsSync(avatarsFolder + data.name + ".png")) {
-                    self.sprite = data.name + ".png";
+                if (fs.existsSync(avatarsFolder + self.formatUsername(data.name) + ".png")) {
+                    self.sprite = self.formatUsername(data.name) + ".png";
                 }
 
                 if (self.isAdmin()) {
@@ -88,6 +88,10 @@ module.exports = Player = Class.extend({
 
     onExit: function(callback) {
         this.exit_callback = callback;
+    },
+
+    formatUsername: function(username) {
+        return username.replace(/ /gi, "_").toLowerCase();
     },
 
     send: function(name, message) {

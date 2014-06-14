@@ -40,16 +40,13 @@ define(['entity'], function(Entity) {
             //Entity name div
             $("<div>", {
                 "class": "name",
-                html: this.name,
-                css: {
-                    width: (this.name.length * 5)+"px"
-                }
-            }).appendTo(this.div);
+                html: this.name
+            }).prependTo(this.div);
 
             //Entity say div
             $("<div>", {
                 "class": "say"
-            }).appendTo(this.div);
+            }).prependTo(this.div);
         },
 
         update: function(npc){

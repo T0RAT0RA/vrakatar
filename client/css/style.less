@@ -77,11 +77,11 @@
 .entity {
     position: absolute;
 
-
-    &.player, &.npc {
+    .player, .npc {
         @player_width: 32;
         @player_height: 32;
         background: transparent url("../img/character.png") no-repeat;
+        background-size: unit(@player_height*3, px);
         width: unit(@player_width, px);
         height: unit(@player_height, px);
 
@@ -109,15 +109,9 @@
         }
     }
 
-    .name {
-        position: relative;
-        top: -12px;
-        font-size: 10px;
-    }
-
     .say {
-        position: relative;
-        top: -50px;
+        position: absolute;
+        top: -22px;
         font-size: 14px;
         background-color: #0C35D6;
         border-radius: 5px;

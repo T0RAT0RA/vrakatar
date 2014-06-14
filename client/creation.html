@@ -36,10 +36,10 @@
                 <button type="button" class="zoom-out">-</button> Zoom <button type="button" class="zoom-in">+</button><br>
                 <label><input type="checkbox" class="animate" /> Animate</label>
             </div>
-            <div class="entity player" data-direction="s"></div>
-            <div class="entity player" data-direction="n"></div>
-            <div class="entity player" data-direction="e"></div>
-            <div class="entity player" data-direction="w"></div>
+            <div class="entity"><div class="sprite player" data-direction="s"></div></div>
+            <div class="entity"><div class="sprite player" data-direction="n"></div></div>
+            <div class="entity"><div class="sprite player" data-direction="e"></div></div>
+            <div class="entity"><div class="sprite player" data-direction="w"></div></div>
         </div>
 
         <script src="js/lib/require.js"></script>
@@ -128,6 +128,7 @@
                 var lastCheck = 0,
                     animation = 0,
                     increment = 1;
+
                 function animate() {
                     if (!$(".animate").is(":checked")){ return; }
                     var time = Date.now();

@@ -22,11 +22,15 @@ define(function() {
 
         createDiv: function() {
             this.div = $("<div>", {
-                "class": ["entity", this.type].join(" "),
+                "class": "entity",
                 id: this.id
             }).appendTo(".game");
 
-            this.div.css({
+            this.div.sprite = $("<div>", {
+                "class": ["sprite", this.type].join(" ")
+            }).appendTo(this.div);
+
+            this.div.sprite.css({
                 "background-image": "url(img/avatars/"+this.sprite+")",
                 top: Math.round(this.position.y - this.div.height()/2),
                 left: Math.round(this.position.x - this.div.width()/2)
@@ -36,7 +40,7 @@ define(function() {
         update: function(entity){
             this.velocity = entity.velocity;
 
-            this.div.attr("data-direction", entity.direction);
+            this.div.sprite.attr("data-direction", entity.direction);
             this.div.css({
                 top: entity.position.y,
                 left: entity.position.x
@@ -63,7 +67,7 @@ define(function() {
                 this.animation += this.increment;
                 if (this.animation <=0 || this.animation >= 2) this.increment *= -1;
 
-                this.div.css({"background-position-x": "-" + this.animation*32 + "px"});
+                this.div.sprite.css({"background-position-x": "-" + this.animation*32 + "px"});
                 this.lastCheck = Date.now();
             }
         }

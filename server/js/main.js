@@ -108,6 +108,7 @@ function onRequest(request, response) {
         request.on('end', function(chunk) {
             postData = JSON.parse(postData);
             if (postData.username) {
+                postData.username = postData.username.replace(/ /gi, "_").toLowerCase();
                 generateImage(postData, function (image){
                     json_response.success = true;
                     json_response.image = image;

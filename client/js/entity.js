@@ -1,9 +1,10 @@
 define(function() {
 
     var Entity = Class.extend({
-        init: function(id, type, kind, config) {
+        init: function(game, id, type, kind, config) {
             var self = this;
 
+            this.game = game;
             this.id = id;
             this.type = type;
             this.kind = kind;
@@ -18,6 +19,7 @@ define(function() {
             this.animation = 0;
 
             this.createDiv();
+            this.bindActions();
         },
 
         createDiv: function() {
@@ -35,6 +37,9 @@ define(function() {
                 top: Math.round(this.position.y - this.div.height()/2),
                 left: Math.round(this.position.x - this.div.width()/2)
             });
+        },
+
+        bindActions: function() {
         },
 
         update: function(entity){

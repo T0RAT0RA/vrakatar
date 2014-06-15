@@ -74,19 +74,10 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
         },
 
         onChat: function (data) {
-            var entity_div = $(".entity#"+data.id),
-                entity_div_say = entity_div.find(".say");
-
-            if (!entity_div.length) { return; }
-
-            this.app.logMessages(data.name + ": " + data.message);
-
-            entity_div_say.stop(true);
-            entity_div_say.html(data.message)
-                .css({
-                    width: (data.message.length * 5)+"px"
-                });
-            entity_div_say.show('fast').delay(5000).hide('fast');
+            if (this.entities[data.id]) {
+                this.entities[data.id].onChat(data.message);
+                this.app.logMessages(data.name + ": " + data.message);
+            }
         },
 
         onAction: function (data) {
@@ -101,7 +92,7 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
 
         addEntity: function(entity) {
             if (entity.type == "player") {
-                player = new Player(entity.id, entity)
+                player = new Player(this, entity.id, entity)
 
                 if (entity.id == this.player.id) {
                     player.setCurrentPlayer();
@@ -109,7 +100,7 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
                 this.entities[player.id] = player;
             }
             if (entity.type == "npc") {
-                npc = new Npc(entity.id, entity.kind, entity)
+                npc = new Npc(this, entity.id, entity.kind, entity)
                 this.entities[npc.id] = npc;
             }
         },
@@ -137,14 +128,6 @@ define(["player", "npc", "gameRenderer"], function (Player, Npc, GameRenderer) {
                         $(".chat").val("").hide();
                     }
                 }
-            });
-
-            $(".game").on("click", ".action", function() {
-                self.socket.emit(Types.Messages.ACTION, {id: $(this).data("id")});
-            });
-
-            $(".game").on("click", ".entity", function(e) {
-                $(this).find(".actions").toggle();
             });
             /*
             $(".game").on("click", ".map", function(e) {

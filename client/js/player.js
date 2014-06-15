@@ -1,8 +1,8 @@
 define(['entity'], function(Entity) {
 
     var Player = Entity.extend({
-        init: function(id, config) {
-            this._super(id, "player", Types.Entities.PLAYER, config);
+        init: function(game, id, config) {
+            this._super(game, id, "player", Types.Entities.PLAYER, config);
             this.isCurrentPlayer = false;
         },
 
@@ -52,6 +52,30 @@ define(['entity'], function(Entity) {
             $("<div>", {
                 "class": "say"
             }).prependTo(this.div);
+        },
+
+        onChat: function(message) {
+            this.div.find(".say").stop(true).hide();
+            if (!message) {
+                return;
+            }
+            this.div.find(".say").html(message)
+                .css({
+                    width: (message.length * 5)+"px"
+                });
+            this.div.find(".say").show('fast').delay(5000).hide('fast');
+        },
+
+        bindActions: function() {
+            var self = this;
+            this._super();
+
+            this.div.on("click", function(e) {
+                self.div.find(".actions").toggle();
+            });
+            this.div.on("click", ".action", function() {
+                self.game.socket.emit(Types.Messages.ACTION, {id: $(this).data("id")});
+            });
         },
 
         update: function(player){

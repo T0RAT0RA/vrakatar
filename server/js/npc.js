@@ -10,7 +10,6 @@ module.exports = Npc = Entity.extend({
 
     getRandomKind: function() {
         return _.shuffle([
-            "bieber",
             "wolverine",
             "pikachu",
             "nobody",

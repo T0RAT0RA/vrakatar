@@ -16,6 +16,7 @@ define(["io", "game"], function (io, Game) {
 
             $(".game .register button").show();
             $(".game .register .loader").remove();
+            $(".game .register .name").val(location.hash.split("#")[1]);
 
             socket.on(Types.Messages.WORLDSINFO, this.updateWoldsInfo.bind(this));
         },

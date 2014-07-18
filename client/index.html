@@ -125,6 +125,8 @@
                 });
 
                 function preview(image) {
+                    //No cache
+                    image = image + "?" + Date.now();
                     $(".preview .player").css({"background-image": "url(img/avatars/"+image+")"});
                     $(".preview").show();
                 }
